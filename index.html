@@ -54,25 +54,27 @@
 
     後ほどJavaScriptと接続します。
   -->
-  <div id="timeline-filters">
+<!--
+  ============================================================
+  カテゴリーフィルター
+  ============================================================
 
-    <button type="button" data-category="all">
-      すべて
-    </button>
+  カテゴリーボタンはJavaScriptが
+  timeline.json の内容を見て自動生成します。
 
-    <button type="button" data-category="history">
-      歴史
-    </button>
+  そのため、HTML側には個別のカテゴリーを書きません。
 
-    <button type="button" data-category="race">
-      レース
-    </button>
+  JSONに新しいカテゴリーを追加すれば、
+  フィルターボタンも自動的に増える仕組みにします。
+-->
+<div id="timeline-filters">
 
-    <button type="button" data-category="technology">
-      技術
-    </button>
+  <!--
+    JavaScriptによって、
+    「すべて」と各カテゴリーボタンがここに追加されます。
+  -->
 
-  </div>
+</div>
     <!--
       JavaScriptによって、ここに年表が表示されます。
     -->
