@@ -41,6 +41,38 @@
 
     <h2>年表</h2>
 
+      <!--
+    ============================================================
+    カテゴリーフィルター
+    ============================================================
+
+    年表の件数が増えても目的の情報を探しやすいように、
+    カテゴリーによる絞り込み機能を用意します。
+
+    現在はテストデータに合わせて、
+    history / race / technology の3種類を用意しています。
+
+    後ほどJavaScriptと接続します。
+  -->
+  <div id="timeline-filters">
+
+    <button type="button" data-category="all">
+      すべて
+    </button>
+
+    <button type="button" data-category="history">
+      歴史
+    </button>
+
+    <button type="button" data-category="race">
+      レース
+    </button>
+
+    <button type="button" data-category="technology">
+      技術
+    </button>
+
+  </div>
     <!--
       JavaScriptによって、ここに年表が表示されます。
     -->
