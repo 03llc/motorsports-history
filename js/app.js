@@ -178,9 +178,57 @@ function displayTimeline(timelineData) {
     description.className = "timeline-description";
     description.textContent = item.description;
 
-    article.appendChild(date);
-    article.appendChild(title);
-    article.appendChild(description);
+    /*
+ * ------------------------------------------------------------
+ * カテゴリータグ
+ * ------------------------------------------------------------
+ *
+ * timeline.json の categories を、
+ * カード内に小さなタグとして表示します。
+ */
+const categoryTags = document.createElement("div");
+categoryTags.className = "timeline-categories";
+
+
+/*
+ * categories が配列として存在する場合だけ処理します。
+ */
+if (Array.isArray(item.categories)) {
+
+  item.categories.forEach((category) => {
+
+    /*
+     * 1つのカテゴリータグを作成します。
+     */
+    const tag = document.createElement("span");
+
+    tag.className = "timeline-category-tag";
+
+
+    /*
+     * categoryLabels に日本語名があれば、
+     * その日本語を表示します。
+     *
+     * 未登録カテゴリーの場合は、
+     * JSON内の英語名をそのまま表示します。
+     */
+    tag.textContent =
+      categoryLabels[category] || category;
+
+
+    /*
+     * タグをカテゴリー欄へ追加します。
+     */
+    categoryTags.appendChild(tag);
+
+  });
+
+}
+
+article.appendChild(date);
+article.appendChild(title);
+article.appendChild(description);
+article.appendChild(categoryTags);
 
     timelineList.appendChild(article);
 
