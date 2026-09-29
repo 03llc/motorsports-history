@@ -338,3 +338,51 @@ h1 {
   border: 1px solid #d0d0d0;
   border-radius: 999px;
 }
+
+/*
+ * ============================================================
+ * 年表カード内の典拠表示
+ * ============================================================
+ *
+ * timeline.json の sources に登録された資料情報を、
+ * 各カードの下部に表示します。
+ */
+
+
+/* 典拠欄全体 */
+.timeline-sources {
+  margin-top: 18px;
+  padding-top: 14px;
+
+  border-top: 1px solid #ddd;
+}
+
+
+/* 「典拠」という見出し */
+.timeline-sources-title {
+  margin: 0 0 6px;
+
+  font-size: 0.85rem;
+  font-weight: bold;
+
+  color: #555;
+}
+
+
+/* 各典拠 */
+.timeline-source-item {
+  margin: 4px 0 0;
+
+  font-size: 0.85rem;
+  line-height: 1.6;
+
+  color: #666;
+}
+
+
+/* 典拠URL */
+.timeline-source-item a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
