@@ -525,4 +525,102 @@ function setupCategoryFilters() {
  * ページ読み込み時に開始
  * ============================================================
  */
+// ============================================================
+// 人物データの読み込み
+// ============================================================
+//
+// data/people.json を読み込み、
+// index.html の #people-list に人物カードを表示します。
+//
+// 年表データとは別ファイルにすることで、
+// ・人物
+// ・生没年月日
+// ・役割
+// ・関連情報
+// を独立して管理できるようにします。
+// ============================================================
+
+async function loadPeople() {
+  try {
+    // people.json を取得
+    const response = await fetch("./data/people.json");
+
+    // HTTPエラーがあった場合は処理を中断
+    if (!response.ok) {
+      throw new Error("人物データを読み込めませんでした。");
+    }
+
+    // JSONとして読み込む
+    const peopleData = await response.json();
+
+    // 読み込んだ人物データを画面に表示
+    displayPeople(peopleData);
+
+  } catch (error) {
+    console.error(error);
+
+    // エラー時の表示
+    const peopleList = document.getElementById("people-list");
+
+    if (peopleList) {
+      peopleList.innerHTML =
+        "<p>人物データを読み込むことができませんでした。</p>";
+    }
+  }
+}
+
+
+// ============================================================
+// 人物カードの表示
+// ============================================================
+
+function displayPeople(peopleData) {
+  const peopleList = document.getElementById("people-list");
+
+  // 人物表示エリアがなければ何もしない
+  if (!peopleList) {
+    return;
+  }
+
+  // 一度中身を空にする
+  peopleList.innerHTML = "";
+
+  // データが0件の場合
+  if (!Array.isArray(peopleData) || peopleData.length === 0) {
+    peopleList.innerHTML = "<p>人物データはまだありません。</p>";
+    return;
+  }
+
+  // 人物1人ずつカードを作る
+  peopleData.forEach((person) => {
+
+    const article = document.createElement("article");
+    article.className = "person-item";
+
+    // 人物名
+    const name = document.createElement("h3");
+    name.textContent = person.name || "名称未登録";
+
+    // 生没年表示
+    const lifespan = document.createElement("p");
+    lifespan.className = "person-lifespan";
+
+    if (person.display && person.display.lifespan_text) {
+      lifespan.textContent = person.display.lifespan_text;
+    } else {
+      lifespan.textContent = "生没年月日：未登録";
+    }
+
+    // カードへ追加
+    article.appendChild(name);
+    article.appendChild(lifespan);
+
+    peopleList.appendChild(article);
+  });
+}
+
+
+// 人物データの読み込み開始
+loadPeople();
+
 loadTimeline();
