@@ -1,14 +1,16 @@
 /*
  * ============================================================
  * モータースポーツ史
- * 年表データの読み込み・表示・カテゴリー絞り込み
+ * 年表データの読み込み・表示・カテゴリー自動生成
  * ============================================================
  *
  * data/timeline.json に保存されている歴史データを読み込み、
  *
  * 1. 年代順に並べる
  * 2. 年表として表示する
- * 3. カテゴリーで絞り込む
+ * 3. JSON内のカテゴリーを自動収集する
+ * 4. カテゴリーボタンを自動生成する
+ * 5. カテゴリーで絞り込む
  *
  * という処理を行います。
  * ============================================================
@@ -17,13 +19,38 @@
 
 /*
  * ============================================================
- * 読み込んだ年表データを保持する場所
+ * 読み込んだ年表データを保持
  * ============================================================
- *
- * カテゴリーボタンを押したときにも同じデータを使えるよう、
- * 関数の外側に保存しておきます。
  */
 let allTimelineData = [];
+
+
+/*
+ * ============================================================
+ * カテゴリー名の表示用ラベル
+ * ============================================================
+ *
+ * JSONでは機械処理しやすい英語名を使い、
+ * 画面では日本語名を表示します。
+ *
+ * 今後カテゴリーを追加した場合は、
+ * 必要に応じてここへ日本語名を追加します。
+ */
+const categoryLabels = {
+  history: "歴史",
+  race: "レース",
+  technology: "技術",
+  driver: "ドライバー",
+  team: "チーム",
+  car: "車両",
+  manufacturer: "メーカー",
+  circuit: "サーキット",
+  regulation: "レギュレーション",
+  safety: "安全",
+  culture: "文化",
+  museum: "博物館",
+  society: "社会"
+};
 
 
 /*
@@ -35,79 +62,53 @@ async function loadTimeline() {
 
   try {
 
-    /*
-     * timeline.json を読み込みます。
-     */
     const response = await fetch("./data/timeline.json");
 
-
-    /*
-     * ファイルが見つからないなど、
-     * HTTPエラーが発生した場合は処理を止めます。
-     */
     if (!response.ok) {
       throw new Error(
         `timeline.json の読み込みに失敗しました: ${response.status}`
       );
     }
 
-
-    /*
-     * JSONをJavaScriptの配列へ変換します。
-     */
     const timelineData = await response.json();
 
-
-    /*
-     * 開発時の確認用です。
-     */
     console.log("モータースポーツ史データを読み込みました。");
     console.log(timelineData);
 
 
     /*
      * ----------------------------------------------------------
-     * 年代順に並べ替える
+     * 年代順に並べ替え
      * ----------------------------------------------------------
-     *
-     * 人間向けの display.date_text ではなく、
-     * 機械処理用の time_span.start を使用します。
      */
     timelineData.sort((a, b) => {
 
-      /*
-       * start がないデータは最後へ送ります。
-       */
       if (!a.time_span.start && !b.time_span.start) return 0;
       if (!a.time_span.start) return 1;
       if (!b.time_span.start) return -1;
 
-
-      /*
-       * ISO形式の日付を比較します。
-       */
       return new Date(a.time_span.start) - new Date(b.time_span.start);
 
     });
 
 
     /*
-     * 絞り込みに使えるよう、
-     * 読み込んだ全データを保存します。
+     * 全データを保存
      */
     allTimelineData = timelineData;
 
 
     /*
-     * 最初は全件表示します。
+     * まず年表を全件表示
      */
     displayTimeline(allTimelineData);
 
 
     /*
-     * カテゴリーボタンを使えるようにします。
+     * JSONからカテゴリーを探して
+     * フィルターボタンを自動生成
      */
-    setupCategoryFilters();
+    createCategoryFilters(allTimelineData);
 
   } catch (error) {
 
@@ -127,34 +128,23 @@ async function loadTimeline() {
 
 /*
  * ============================================================
- * 年表をHTMLへ表示する
+ * 年表をHTMLへ表示
  * ============================================================
  */
 function displayTimeline(timelineData) {
 
   const timelineList = document.getElementById("timeline-list");
 
-
-  /*
-   * 表示場所が存在しなければ終了します。
-   */
   if (!timelineList) {
     console.error("timeline-list が見つかりません。");
     return;
   }
 
-
-  /*
-   * 現在表示されている内容をいったん消します。
-   *
-   * カテゴリーを変更するたびに、
-   * 新しい絞り込み結果を描き直すためです。
-   */
   timelineList.innerHTML = "";
 
 
   /*
-   * 該当するデータが0件だった場合。
+   * 該当データが0件の場合
    */
   if (timelineData.length === 0) {
 
@@ -168,58 +158,30 @@ function displayTimeline(timelineData) {
 
 
   /*
-   * データを1件ずつ年表へ追加します。
+   * データを1件ずつ表示
    */
   timelineData.forEach((item) => {
 
-    /*
-     * 1件分のカード。
-     */
     const article = document.createElement("article");
 
-
-    /*
-     * display.scale の spot / span を
-     * classとして追加します。
-     */
     article.className =
       `timeline-item ${item.display.scale}`;
 
-
-    /*
-     * 表示用の日付。
-     */
     const date = document.createElement("p");
     date.className = "timeline-date";
     date.textContent = item.display.date_text;
 
-
-    /*
-     * タイトル。
-     */
     const title = document.createElement("h3");
     title.textContent = item.title;
 
-
-    /*
-     * 説明文。
-     */
     const description = document.createElement("p");
     description.className = "timeline-description";
     description.textContent = item.description;
 
-
-    /*
-     * カードへ追加します。
-     */
     article.appendChild(date);
     article.appendChild(title);
     article.appendChild(description);
 
-
-    /*
-     * 年表へカードを追加します。
-     */
     timelineList.appendChild(article);
 
   });
@@ -229,44 +191,145 @@ function displayTimeline(timelineData) {
 
 /*
  * ============================================================
- * カテゴリーフィルターを準備する
+ * JSONからカテゴリーを自動収集し、
+ * フィルターボタンを作成
+ * ============================================================
+ */
+function createCategoryFilters(timelineData) {
+
+  /*
+   * ボタンを置く場所
+   */
+  const filterContainer =
+    document.getElementById("timeline-filters");
+
+  if (!filterContainer) {
+    console.error("timeline-filters が見つかりません。");
+    return;
+  }
+
+
+  /*
+   * 念のため、現在の内容を空にします。
+   */
+  filterContainer.innerHTML = "";
+
+
+  /*
+   * ----------------------------------------------------------
+   * 全データからカテゴリーを集める
+   * ----------------------------------------------------------
+   *
+   * Setを使うことで、
+   * 同じカテゴリーが複数の出来事に入っていても
+   * 重複せず1つだけ保持できます。
+   */
+  const categorySet = new Set();
+
+  timelineData.forEach((item) => {
+
+    if (!Array.isArray(item.categories)) {
+      return;
+    }
+
+    item.categories.forEach((category) => {
+
+      if (category) {
+        categorySet.add(category);
+      }
+
+    });
+
+  });
+
+
+  /*
+   * Setを配列へ変換します。
+   *
+   * 今のところは英字順に並べます。
+   */
+  const categories =
+    Array.from(categorySet).sort();
+
+
+  /*
+   * ----------------------------------------------------------
+   * 「すべて」ボタン
+   * ----------------------------------------------------------
+   */
+  const allButton = document.createElement("button");
+
+  allButton.type = "button";
+  allButton.dataset.category = "all";
+  allButton.textContent = "すべて";
+
+  /*
+   * 最初は「すべて」を選択状態にします。
+   */
+  allButton.classList.add("active");
+
+  filterContainer.appendChild(allButton);
+
+
+  /*
+   * ----------------------------------------------------------
+   * 各カテゴリーボタンを生成
+   * ----------------------------------------------------------
+   */
+  categories.forEach((category) => {
+
+    const button = document.createElement("button");
+
+    button.type = "button";
+    button.dataset.category = category;
+
+
+    /*
+     * categoryLabels に日本語名があれば日本語表示。
+     *
+     * 登録されていない新カテゴリーの場合は、
+     * JSONのカテゴリー名をそのまま表示します。
+     *
+     * これにより、新しいカテゴリーをJSONへ追加しても
+     * ボタン自体は必ず表示されます。
+     */
+    button.textContent =
+      categoryLabels[category] || category;
+
+    filterContainer.appendChild(button);
+
+  });
+
+
+  /*
+   * ボタンを作った後、
+   * クリック機能を設定します。
+   */
+  setupCategoryFilters();
+
+}
+
+
+/*
+ * ============================================================
+ * カテゴリーボタンのクリック処理
  * ============================================================
  */
 function setupCategoryFilters() {
 
-  /*
-   * index.html の
-   *
-   * data-category="..."
-   *
-   * を持つボタンをすべて取得します。
-   */
   const filterButtons =
     document.querySelectorAll("#timeline-filters button");
 
 
-  /*
-   * 各ボタンにクリック処理を設定します。
-   */
   filterButtons.forEach((button) => {
 
     button.addEventListener("click", () => {
 
-      /*
-       * 押されたボタンのカテゴリーを取得します。
-       *
-       * 例：
-       * all
-       * history
-       * race
-       * technology
-       */
       const selectedCategory = button.dataset.category;
 
 
       /*
-       * 「すべて」が選ばれた場合は、
-       * 元の全データをそのまま表示します。
+       * 「すべて」
        */
       if (selectedCategory === "all") {
 
@@ -275,40 +338,26 @@ function setupCategoryFilters() {
       } else {
 
         /*
-         * categories配列の中に、
-         * 選択されたカテゴリーが含まれているデータだけを
-         * 抽出します。
-         *
-         * 1つの出来事に複数カテゴリーが設定されていても
-         * 正しく検索できます。
+         * 選択されたカテゴリーを含むデータだけ抽出
          */
-        const filteredData = allTimelineData.filter((item) => {
+        const filteredData =
+          allTimelineData.filter((item) => {
 
-          return (
-            Array.isArray(item.categories) &&
-            item.categories.includes(selectedCategory)
-          );
+            return (
+              Array.isArray(item.categories) &&
+              item.categories.includes(selectedCategory)
+            );
 
-        });
+          });
 
-
-        /*
-         * 絞り込み結果を表示します。
-         */
         displayTimeline(filteredData);
 
       }
 
 
       /*
-       * --------------------------------------------------------
-       * どのボタンが選択されているかを記録
-       * --------------------------------------------------------
-       *
-       * 後でCSSから見た目を変えられるように、
-       * activeというclassを付けます。
+       * 選択中のボタンを切り替え
        */
-
       filterButtons.forEach((filterButton) => {
         filterButton.classList.remove("active");
       });
@@ -318,20 +367,6 @@ function setupCategoryFilters() {
     });
 
   });
-
-
-  /*
-   * ページを開いた直後は
-   * 「すべて」を選択状態にします。
-   */
-  const allButton =
-    document.querySelector(
-      '#timeline-filters button[data-category="all"]'
-    );
-
-  if (allButton) {
-    allButton.classList.add("active");
-  }
 
 }
 
