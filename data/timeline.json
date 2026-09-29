@@ -1,0 +1,100 @@
+[
+  {
+    "id": "ms1960-0001",
+
+    "time_span": {
+      "start": "1960-01-01",
+      "end": "1969-12-31",
+      "precision": "decade"
+    },
+
+    "display": {
+      "date_text": "1960年代",
+      "scale": "span"
+    },
+
+    "title": "サンプル：1960年代の出来事",
+
+    "description": "期間を持つ歴史情報を表示するためのサンプルデータです。",
+
+    "categories": [
+      "history"
+    ],
+
+    "related": {
+      "people": [],
+      "cars": [],
+      "teams": [],
+      "circuits": [],
+      "organizations": []
+    },
+
+    "sources": []
+  },
+
+  {
+    "id": "ms1967-0001",
+
+    "time_span": {
+      "start": "1967-05-03",
+      "end": "1967-05-03",
+      "precision": "day"
+    },
+
+    "display": {
+      "date_text": "1967年5月3日",
+      "scale": "spot"
+    },
+
+    "title": "サンプル：日付が特定できる出来事",
+
+    "description": "年月日まで特定できる出来事のサンプルデータです。",
+
+    "categories": [
+      "race"
+    ],
+
+    "related": {
+      "people": [],
+      "cars": [],
+      "teams": [],
+      "circuits": [],
+      "organizations": []
+    },
+
+    "sources": []
+  },
+
+  {
+    "id": "ms1985-0001",
+
+    "time_span": {
+      "start": "1985-01-01",
+      "end": "1985-12-31",
+      "precision": "year"
+    },
+
+    "display": {
+      "date_text": "1985年頃",
+      "scale": "spot"
+    },
+
+    "title": "サンプル：時期が曖昧な出来事",
+
+    "description": "正確な年月日が分からない歴史情報を扱うためのサンプルデータです。",
+
+    "categories": [
+      "technology"
+    ],
+
+    "related": {
+      "people": [],
+      "cars": [],
+      "teams": [],
+      "circuits": [],
+      "organizations": []
+    },
+
+    "sources": []
+  }
+]
