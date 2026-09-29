@@ -336,11 +336,21 @@ function displayTimeline(timelineData) {
      * カードに各要素を追加
      * ==========================================================
      */
-    article.appendChild(date);
-    article.appendChild(title);
-    article.appendChild(description);
-    article.appendChild(categoryTags);
-    article.appendChild(sourceBox);
+article.appendChild(date);
+article.appendChild(title);
+article.appendChild(description);
+article.appendChild(categoryTags);
+
+/*
+ * 典拠データが1件以上ある場合だけ、
+ * 典拠欄をカードへ追加します。
+ *
+ * sources が空配列 [] の場合は、
+ * 横線も空欄も表示されません。
+ */
+if (Array.isArray(item.sources) && item.sources.length > 0) {
+  article.appendChild(sourceBox);
+}
 
 
     /*
