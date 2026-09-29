@@ -236,3 +236,69 @@ h1 {
 .timeline-item.span {
   border-left: 5px solid #333;
 }
+
+/*
+ * ============================================================
+ * カテゴリーフィルター
+ * ============================================================
+ *
+ * 年表をカテゴリー別に絞り込むためのボタンです。
+ * JavaScriptによって、現在選択されているボタンには
+ * active クラスが付与されます。
+ */
+
+
+/* ボタン全体を並べる領域 */
+#timeline-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+
+  margin-top: 20px;
+  margin-bottom: 30px;
+}
+
+
+/* 各フィルターボタン */
+#timeline-filters button {
+  padding: 8px 16px;
+
+  font: inherit;
+  font-size: 0.95rem;
+
+  color: #333;
+  background: #fff;
+
+  border: 1px solid #bbb;
+  border-radius: 999px;
+
+  cursor: pointer;
+
+  /*
+   * 色や背景が切り替わるときに、
+   * 少しだけ滑らかに変化させます。
+   */
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+
+/* マウスを重ねたとき */
+#timeline-filters button:hover {
+  border-color: #333;
+  background: #eee;
+}
+
+
+/*
+ * 現在選択されているカテゴリー。
+ *
+ * app.js が active クラスを付けます。
+ */
+#timeline-filters button.active {
+  color: #fff;
+  background: #333;
+  border-color: #333;
+}
