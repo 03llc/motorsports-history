@@ -386,3 +386,42 @@ h1 {
   text-decoration: underline;
   text-underline-offset: 2px;
 }
+
+/* ============================================================
+   人物セクション
+   ============================================================ */
+
+#people {
+  margin-top: 70px;
+  margin-bottom: 80px;
+}
+
+
+/* 人物カード一覧 */
+#people-list {
+  display: grid;
+  gap: 18px;
+}
+
+
+/* 1人分の人物カード */
+.person-item {
+  background: #ffffff;
+  border-radius: 8px;
+  padding: 24px;
+}
+
+
+/* 人物名 */
+.person-item h3 {
+  margin: 0 0 10px;
+  font-size: 1.2rem;
+}
+
+
+/* 生没年月日 */
+.person-lifespan {
+  margin: 0;
+  color: #666;
+  line-height: 1.6;
+}
