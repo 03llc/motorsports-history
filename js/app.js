@@ -1,22 +1,40 @@
-/*
- * ============================================================
- * モータースポーツ史
- * 年表データの読み込み・表示・カテゴリー自動生成・典拠表示
- * ============================================================
- */
+// ============================================================
+// モータースポーツ史
+// app.js
+// ============================================================
+//
+// このファイルでは、主に次の処理を行います。
+//
+// 1. 年表データ（timeline.json）の読み込み
+// 2. 年表データの日付順ソート
+// 3. 年表カードの表示
+// 4. カテゴリボタンの自動生成
+// 5. カテゴリによる絞り込み
+// 6. 典拠情報の表示
+// 7. 人物データ（people.json）の読み込み
+// 8. 人物カードの表示
+//
+// ============================================================
 
 
-/*
- * 読み込んだ全データを保持します。
- */
+// ============================================================
+// 年表データを保持する変数
+// ============================================================
+
 let allTimelineData = [];
 
 
-/*
- * ============================================================
- * カテゴリー名の日本語表示
- * ============================================================
- */
+// ============================================================
+// カテゴリ名の日本語表示
+// ============================================================
+//
+// timeline.json 内では英語のIDを使い、
+// 画面上では日本語ラベルを表示します。
+//
+// 新しいカテゴリを追加したい場合は、
+// ここへ追加していきます。
+// ============================================================
+
 const categoryLabels = {
   history: "歴史",
   race: "レース",
@@ -34,535 +52,631 @@ const categoryLabels = {
 };
 
 
-/*
- * ============================================================
- * JSONデータを読み込む
- * ============================================================
- */
+// ============================================================
+// 年表データを読み込む
+// ============================================================
+
 async function loadTimeline() {
 
   try {
 
+    // timeline.json を取得
     const response = await fetch("./data/timeline.json");
 
+
+    // ファイルが取得できなかった場合
     if (!response.ok) {
-      throw new Error(
-        `timeline.json の読み込みに失敗しました: ${response.status}`
-      );
+      throw new Error("年表データを読み込めませんでした。");
     }
 
+
+    // JSONデータとして読み込む
     const timelineData = await response.json();
 
-    console.log("モータースポーツ史データを読み込みました。");
-    console.log(timelineData);
 
+    // --------------------------------------------------------
+    // 日付順に並べ替え
+    // --------------------------------------------------------
+    //
+    // time_span.start を使って並べます。
+    //
+    // 日付不明（null）のデータは最後へ送ります。
+    //
+    // 例：
+    //
+    // 1936-01-01
+    // 1966-01-01
+    // null
+    //
+    // の順になります。
+    // --------------------------------------------------------
 
-    /*
-     * ----------------------------------------------------------
-     * 年代順に並べ替え
-     * ----------------------------------------------------------
-     */
     timelineData.sort((a, b) => {
 
-      if (!a.time_span.start && !b.time_span.start) return 0;
-      if (!a.time_span.start) return 1;
-      if (!b.time_span.start) return -1;
+      const dateA =
+        a.time_span && a.time_span.start
+          ? a.time_span.start
+          : null;
 
-      return new Date(a.time_span.start) - new Date(b.time_span.start);
+      const dateB =
+        b.time_span && b.time_span.start
+          ? b.time_span.start
+          : null;
 
+
+      // 両方とも日付不明
+      if (!dateA && !dateB) {
+        return 0;
+      }
+
+
+      // Aだけ不明 → Aを後ろへ
+      if (!dateA) {
+        return 1;
+      }
+
+
+      // Bだけ不明 → Bを後ろへ
+      if (!dateB) {
+        return -1;
+      }
+
+
+      // 日付文字列で比較
+      return dateA.localeCompare(dateB);
     });
 
 
-    /*
-     * 全データを保存
-     */
+    // 全データを保存
     allTimelineData = timelineData;
 
 
-    /*
-     * 最初は全件表示
-     */
+    // 年表を表示
     displayTimeline(allTimelineData);
 
 
-    /*
-     * JSONからカテゴリーを自動生成
-     */
+    // カテゴリボタンを作成
     createCategoryFilters(allTimelineData);
 
   } catch (error) {
 
-    console.error("年表データの読み込みエラー:", error);
+    console.error(error);
 
+
+    // エラー時の画面表示
     const timelineList = document.getElementById("timeline-list");
 
     if (timelineList) {
       timelineList.innerHTML =
         "<p>年表データを読み込むことができませんでした。</p>";
     }
-
   }
-
 }
 
 
-/*
- * ============================================================
- * 年表を画面に表示
- * ============================================================
- */
+// ============================================================
+// 年表を画面に表示する
+// ============================================================
+
 function displayTimeline(timelineData) {
 
-  const timelineList = document.getElementById("timeline-list");
+  const timelineList =
+    document.getElementById("timeline-list");
 
+
+  // 表示場所が存在しない場合は終了
   if (!timelineList) {
-    console.error("timeline-list が見つかりません。");
     return;
   }
 
-  /*
-   * 現在の表示をいったん消します。
-   */
+
+  // 一度中身を空にする
   timelineList.innerHTML = "";
 
 
-  /*
-   * 該当データが0件の場合
-   */
-  if (timelineData.length === 0) {
+  // ----------------------------------------------------------
+  // データが0件の場合
+  // ----------------------------------------------------------
 
-    const message = document.createElement("p");
-    message.textContent = "該当する年表データはありません。";
+  if (
+    !Array.isArray(timelineData) ||
+    timelineData.length === 0
+  ) {
 
-    timelineList.appendChild(message);
+    timelineList.innerHTML =
+      "<p>該当する年表データはありません。</p>";
 
     return;
   }
 
 
-  /*
-   * 年表データを1件ずつ表示
-   */
+  // ----------------------------------------------------------
+  // 年表データを1件ずつ表示
+  // ----------------------------------------------------------
+
   timelineData.forEach((item) => {
 
-    /*
-     * ----------------------------------------------------------
-     * 1件分のカード
-     * ----------------------------------------------------------
-     */
-    const article = document.createElement("article");
+
+    // ========================================================
+    // 年表カード
+    // ========================================================
+
+    const article =
+      document.createElement("article");
+
+
+    // spot / span をCSSクラスとして利用
+    const scale =
+      item.display && item.display.scale
+        ? item.display.scale
+        : "spot";
+
 
     article.className =
-      `timeline-item ${item.display.scale}`;
+      `timeline-item ${scale}`;
 
 
-    /*
-     * ----------------------------------------------------------
-     * 日付
-     * ----------------------------------------------------------
-     */
-    const date = document.createElement("p");
+    // ========================================================
+    // 日付表示
+    // ========================================================
+
+    const date =
+      document.createElement("p");
 
     date.className = "timeline-date";
-    date.textContent = item.display.date_text;
 
 
-    /*
-     * ----------------------------------------------------------
-     * タイトル
-     * ----------------------------------------------------------
-     */
-    const title = document.createElement("h3");
+    if (
+      item.display &&
+      item.display.date_text
+    ) {
 
-    title.textContent = item.title;
+      date.textContent =
+        item.display.date_text;
 
+    } else {
 
-    /*
-     * ----------------------------------------------------------
-     * 説明文
-     * ----------------------------------------------------------
-     */
-    const description = document.createElement("p");
-
-    description.className = "timeline-description";
-    description.textContent = item.description;
-
-
-    /*
-     * ==========================================================
-     * カテゴリータグ
-     * ==========================================================
-     */
-    const categoryTags = document.createElement("div");
-
-    categoryTags.className = "timeline-categories";
-
-
-    if (Array.isArray(item.categories)) {
-
-      item.categories.forEach((category) => {
-
-        const tag = document.createElement("span");
-
-        tag.className = "timeline-category-tag";
-
-        tag.textContent =
-          categoryLabels[category] || category;
-
-        categoryTags.appendChild(tag);
-
-      });
-
+      date.textContent =
+        "年代不明";
     }
 
 
-    /*
-     * ==========================================================
-     * 典拠
-     * ==========================================================
-     *
-     * sources にデータがある場合だけ表示します。
-     */
-    const sourceBox = document.createElement("div");
+    // ========================================================
+    // タイトル
+    // ========================================================
 
-    sourceBox.className = "timeline-sources";
+    const title =
+      document.createElement("h3");
+
+    title.textContent =
+      item.title || "タイトル未登録";
 
 
-    if (Array.isArray(item.sources) && item.sources.length > 0) {
+    // ========================================================
+    // 説明文
+    // ========================================================
 
-      /*
-       * 「典拠」という見出し
-       */
-      const sourceTitle = document.createElement("p");
+    const description =
+      document.createElement("p");
 
-      sourceTitle.className = "timeline-sources-title";
-      sourceTitle.textContent = "典拠";
+    description.className =
+      "timeline-description";
+
+    description.textContent =
+      item.description || "";
+
+
+    // ========================================================
+    // カードへ追加
+    // ========================================================
+
+    article.appendChild(date);
+    article.appendChild(title);
+    article.appendChild(description);
+
+
+    // ========================================================
+    // カテゴリタグ
+    // ========================================================
+
+    if (
+      Array.isArray(item.categories) &&
+      item.categories.length > 0
+    ) {
+
+      const categoryBox =
+        document.createElement("div");
+
+      categoryBox.className =
+        "timeline-categories";
+
+
+      item.categories.forEach((category) => {
+
+        const tag =
+          document.createElement("span");
+
+        tag.className =
+          "timeline-category-tag";
+
+
+        // 日本語ラベルが登録されていれば日本語表示
+        // 未登録なら元のカテゴリ名を表示
+        tag.textContent =
+          categoryLabels[category] || category;
+
+
+        categoryBox.appendChild(tag);
+      });
+
+
+      article.appendChild(categoryBox);
+    }
+
+
+    // ========================================================
+    // 典拠情報
+    // ========================================================
+    //
+    // sources が空配列の場合は、
+    // 典拠欄そのものを表示しません。
+    //
+    // ========================================================
+
+    if (
+      Array.isArray(item.sources) &&
+      item.sources.length > 0
+    ) {
+
+      const sourceBox =
+        document.createElement("div");
+
+      sourceBox.className =
+        "timeline-sources";
+
+
+      // ------------------------------------------------------
+      // 典拠見出し
+      // ------------------------------------------------------
+
+      const sourceTitle =
+        document.createElement("p");
+
+      sourceTitle.className =
+        "timeline-sources-title";
+
+      sourceTitle.textContent =
+        "典拠";
 
       sourceBox.appendChild(sourceTitle);
 
 
-      /*
-       * sourcesを1件ずつ表示
-       */
+      // ------------------------------------------------------
+      // 典拠を1件ずつ表示
+      // ------------------------------------------------------
+
       item.sources.forEach((source) => {
 
-        const sourceItem = document.createElement("p");
+        const sourceItem =
+          document.createElement("p");
 
-        sourceItem.className = "timeline-source-item";
+        sourceItem.className =
+          "timeline-source-item";
 
 
-        /*
-         * 表示用文字列を作ります。
-         */
-        const parts = [];
+        // 典拠情報の各項目を配列へ入れる
+        const sourceParts = [];
+
 
         if (source.title) {
-          parts.push(source.title);
+          sourceParts.push(source.title);
         }
+
 
         if (source.author) {
-          parts.push(source.author);
+          sourceParts.push(source.author);
         }
+
 
         if (source.publisher) {
-          parts.push(source.publisher);
+          sourceParts.push(source.publisher);
         }
+
 
         if (source.year) {
-          parts.push(String(source.year));
+          sourceParts.push(String(source.year));
         }
+
 
         if (source.note) {
-          parts.push(source.note);
+          sourceParts.push(source.note);
         }
 
 
-        /*
-         * URLがある場合はリンク表示
-         */
+        // 表示文字列
+        const sourceText =
+          sourceParts.length > 0
+            ? sourceParts.join(" / ")
+            : "典拠情報未登録";
+
+
+        // ----------------------------------------------------
+        // URLがある場合はリンク化
+        // ----------------------------------------------------
+
         if (source.url) {
 
-          const link = document.createElement("a");
+          const link =
+            document.createElement("a");
 
           link.href = source.url;
           link.target = "_blank";
           link.rel = "noopener noreferrer";
-
-          link.textContent =
-            source.title || "参照リンク";
+          link.textContent = sourceText;
 
           sourceItem.appendChild(link);
 
-
-          /*
-           * 資料名以外の情報を後ろに表示
-           */
-          const extraParts = parts.filter((part) => {
-            return part !== source.title;
-          });
-
-          if (extraParts.length > 0) {
-
-            sourceItem.append(
-              document.createTextNode(
-                " / " + extraParts.join(" / ")
-              )
-            );
-
-          }
-
         } else {
 
-          /*
-           * URLがない場合
-           */
           sourceItem.textContent =
-            parts.length > 0
-              ? parts.join(" / ")
-              : "典拠情報未登録";
-
+            sourceText;
         }
 
 
         sourceBox.appendChild(sourceItem);
-
       });
 
+
+      // sources が存在する場合だけ
+      // カードへ典拠欄を追加
+      article.appendChild(sourceBox);
     }
 
 
-    /*
-     * ==========================================================
-     * カードに各要素を追加
-     * ==========================================================
-     */
-article.appendChild(date);
-article.appendChild(title);
-article.appendChild(description);
-article.appendChild(categoryTags);
+    // ========================================================
+    // 年表一覧へカードを追加
+    // ========================================================
 
-/*
- * 典拠データが1件以上ある場合だけ、
- * 典拠欄をカードへ追加します。
- *
- * sources が空配列 [] の場合は、
- * 横線も空欄も表示されません。
- */
-if (Array.isArray(item.sources) && item.sources.length > 0) {
-  article.appendChild(sourceBox);
-}
-
-
-    /*
-     * 年表全体へ追加
-     */
     timelineList.appendChild(article);
-
   });
-
 }
 
 
-/*
- * ============================================================
- * JSONからカテゴリーを集めてフィルターボタンを作る
- * ============================================================
- */
+// ============================================================
+// カテゴリフィルターを自動生成
+// ============================================================
+
 function createCategoryFilters(timelineData) {
 
-  const filterContainer =
+  const filterBox =
     document.getElementById("timeline-filters");
 
-  if (!filterContainer) {
-    console.error("timeline-filters が見つかりません。");
+
+  if (!filterBox) {
     return;
   }
 
 
-  /*
-   * 既存ボタンを空にします。
-   */
-  filterContainer.innerHTML = "";
+  // 一度空にする
+  filterBox.innerHTML = "";
 
 
-  /*
-   * カテゴリーを重複なしで収集
-   */
-  const categorySet = new Set();
+  // ==========================================================
+  // JSON内に登場するカテゴリを集める
+  // ==========================================================
+
+  const categorySet =
+    new Set();
+
 
   timelineData.forEach((item) => {
 
-    if (!Array.isArray(item.categories)) {
-      return;
-    }
+    if (Array.isArray(item.categories)) {
 
-    item.categories.forEach((category) => {
-
-      if (category) {
+      item.categories.forEach((category) => {
         categorySet.add(category);
-      }
-
-    });
-
+      });
+    }
   });
 
 
-  /*
-   * 配列へ変換して英字順
-   */
+  // 配列へ変換
   const categories =
-    Array.from(categorySet).sort();
+    Array.from(categorySet);
 
 
-  /*
-   * ----------------------------------------------------------
-   * 「すべて」ボタン
-   * ----------------------------------------------------------
-   */
-  const allButton = document.createElement("button");
+  // 日本語ラベル順に並べる
+  categories.sort((a, b) => {
+
+    const labelA =
+      categoryLabels[a] || a;
+
+    const labelB =
+      categoryLabels[b] || b;
+
+    return labelA.localeCompare(
+      labelB,
+      "ja"
+    );
+  });
+
+
+  // ==========================================================
+  // 「すべて」ボタン
+  // ==========================================================
+
+  const allButton =
+    document.createElement("button");
 
   allButton.type = "button";
   allButton.dataset.category = "all";
+  allButton.className = "active";
   allButton.textContent = "すべて";
 
-  allButton.classList.add("active");
-
-  filterContainer.appendChild(allButton);
+  filterBox.appendChild(allButton);
 
 
-  /*
-   * ----------------------------------------------------------
-   * 各カテゴリーボタン
-   * ----------------------------------------------------------
-   */
+  // ==========================================================
+  // カテゴリボタン
+  // ==========================================================
+
   categories.forEach((category) => {
 
-    const button = document.createElement("button");
+    const button =
+      document.createElement("button");
 
     button.type = "button";
-    button.dataset.category = category;
+    button.dataset.category =
+      category;
 
     button.textContent =
-      categoryLabels[category] || category;
+      categoryLabels[category] ||
+      category;
 
-    filterContainer.appendChild(button);
-
+    filterBox.appendChild(button);
   });
 
 
-  /*
-   * クリック処理を設定
-   */
+  // ボタンのクリック処理を設定
   setupCategoryFilters();
-
 }
 
 
-/*
- * ============================================================
- * カテゴリーフィルターのクリック処理
- * ============================================================
- */
+// ============================================================
+// カテゴリフィルターのクリック処理
+// ============================================================
+
 function setupCategoryFilters() {
 
-  const filterButtons =
-    document.querySelectorAll("#timeline-filters button");
+  const filterBox =
+    document.getElementById("timeline-filters");
 
 
-  filterButtons.forEach((button) => {
-
-    button.addEventListener("click", () => {
-
-      const selectedCategory =
-        button.dataset.category;
+  if (!filterBox) {
+    return;
+  }
 
 
-      /*
-       * 「すべて」
-       */
-      if (selectedCategory === "all") {
+  const buttons =
+    filterBox.querySelectorAll("button");
 
-        displayTimeline(allTimelineData);
 
-      } else {
+  buttons.forEach((button) => {
 
-        /*
-         * 指定カテゴリーだけ抽出
-         */
+    button.addEventListener(
+      "click",
+      () => {
+
+        const selectedCategory =
+          button.dataset.category;
+
+
+        // ----------------------------------------------------
+        // activeクラスを付け替える
+        // ----------------------------------------------------
+
+        buttons.forEach((btn) => {
+          btn.classList.remove("active");
+        });
+
+        button.classList.add("active");
+
+
+        // ----------------------------------------------------
+        // 「すべて」の場合
+        // ----------------------------------------------------
+
+        if (selectedCategory === "all") {
+
+          displayTimeline(
+            allTimelineData
+          );
+
+          return;
+        }
+
+
+        // ----------------------------------------------------
+        // 指定カテゴリで絞り込む
+        // ----------------------------------------------------
+
         const filteredData =
           allTimelineData.filter((item) => {
 
             return (
               Array.isArray(item.categories) &&
-              item.categories.includes(selectedCategory)
+              item.categories.includes(
+                selectedCategory
+              )
             );
-
           });
 
+
         displayTimeline(filteredData);
-
       }
-
-
-      /*
-       * 選択中ボタンの表示切替
-       */
-      filterButtons.forEach((filterButton) => {
-        filterButton.classList.remove("active");
-      });
-
-      button.classList.add("active");
-
-    });
-
+    );
   });
-
 }
 
 
-/*
- * ============================================================
- * ページ読み込み時に開始
- * ============================================================
- */
 // ============================================================
 // 人物データの読み込み
 // ============================================================
 //
 // data/people.json を読み込み、
-// index.html の #people-list に人物カードを表示します。
+// index.html の #people-list に表示します。
 //
-// 年表データとは別ファイルにすることで、
+// 年表とは別ファイルにすることで、
+//
 // ・人物
 // ・生没年月日
 // ・役割
-// ・関連情報
-// を独立して管理できるようにします。
+// ・関連チーム
+// ・関連車両
+// ・関連イベント
+//
+// などを独立して管理できます。
 // ============================================================
 
 async function loadPeople() {
-  try {
-    // people.json を取得
-    const response = await fetch("./data/people.json");
 
-    // HTTPエラーがあった場合は処理を中断
+  try {
+
+    // people.json を取得
+    const response =
+      await fetch("./data/people.json");
+
+
+    // ファイル取得失敗
     if (!response.ok) {
-      throw new Error("人物データを読み込めませんでした。");
+
+      throw new Error(
+        "人物データを読み込めませんでした。"
+      );
     }
 
-    // JSONとして読み込む
-    const peopleData = await response.json();
 
-    // 読み込んだ人物データを画面に表示
+    // JSONとして読み込む
+    const peopleData =
+      await response.json();
+
+
+    // 人物を表示
     displayPeople(peopleData);
 
   } catch (error) {
+
     console.error(error);
 
-    // エラー時の表示
-    const peopleList = document.getElementById("people-list");
+
+    const peopleList =
+      document.getElementById(
+        "people-list"
+      );
+
 
     if (peopleList) {
+
       peopleList.innerHTML =
         "<p>人物データを読み込むことができませんでした。</p>";
     }
@@ -571,99 +685,169 @@ async function loadPeople() {
 
 
 // ============================================================
-// 人物カードの表示
+// 人物データを画面に表示
 // ============================================================
 
 function displayPeople(peopleData) {
-  const peopleList = document.getElementById("people-list");
 
-  // 人物表示エリアがなければ何もしない
+  const peopleList =
+    document.getElementById(
+      "people-list"
+    );
+
+
+  // 表示場所がなければ終了
   if (!peopleList) {
     return;
   }
 
+
   // 一度中身を空にする
   peopleList.innerHTML = "";
 
-  // データが0件の場合
-  if (!Array.isArray(peopleData) || peopleData.length === 0) {
-    peopleList.innerHTML = "<p>人物データはまだありません。</p>";
+
+  // ==========================================================
+  // 人物データが0件の場合
+  // ==========================================================
+
+  if (
+    !Array.isArray(peopleData) ||
+    peopleData.length === 0
+  ) {
+
+    peopleList.innerHTML =
+      "<p>人物データはまだありません。</p>";
+
     return;
   }
 
-  // 人物1人ずつカードを作る
+
+  // ==========================================================
+  // 人物を1人ずつ表示
+  // ==========================================================
+
   peopleData.forEach((person) => {
 
-    const article = document.createElement("article");
-    article.className = "person-item";
 
+    // --------------------------------------------------------
+    // 人物カード
+    // --------------------------------------------------------
+
+    const article =
+      document.createElement("article");
+
+    article.className =
+      "person-item";
+
+
+    // --------------------------------------------------------
     // 人物名
-    const name = document.createElement("h3");
-    name.textContent = person.name || "名称未登録";
+    // --------------------------------------------------------
 
-    // 生没年表示
-    const lifespan = document.createElement("p");
-    lifespan.className = "person-lifespan";
+    const name =
+      document.createElement("h3");
 
-    if (person.display && person.display.lifespan_text) {
-      lifespan.textContent = person.display.lifespan_text;
+    name.textContent =
+      person.name || "名称未登録";
+
+
+    // --------------------------------------------------------
+    // 生没年月日
+    // --------------------------------------------------------
+
+    const lifespan =
+      document.createElement("p");
+
+    lifespan.className =
+      "person-lifespan";
+
+
+    if (
+      person.display &&
+      person.display.lifespan_text
+    ) {
+
+      lifespan.textContent =
+        person.display.lifespan_text;
+
     } else {
-      lifespan.textContent = "生没年月日：未登録";
+
+      lifespan.textContent =
+        "生没年月日：未登録";
     }
-    
-// 役割表示
-if (Array.isArray(person.roles) && person.roles.length > 0) {
-  const roles = document.createElement("p");
-// 人物名
-article.appendChild(name);
 
 
-// ============================================================
-// 人物カードへ情報を追加
-// ============================================================
+    // ========================================================
+    // 人物名を最初に表示
+    // ========================================================
 
-// まず人物名を表示
-article.appendChild(name);
-
-
-// ------------------------------------------------------------
-// 役割表示
-// ------------------------------------------------------------
-if (Array.isArray(person.roles) && person.roles.length > 0) {
-
-  const roles = document.createElement("p");
-  roles.className = "person-roles";
-
-  // JSON内の役割名を、日本語表示へ変換します
-  const roleLabels = {
-    driver: "ドライバー",
-    engineer: "エンジニア",
-    designer: "デザイナー",
-    founder: "創業者",
-    manager: "監督・マネージャー"
-  };
-
-  roles.textContent = person.roles
-    .map((role) => roleLabels[role] || role)
-    .join(" / ");
-
-  article.appendChild(roles);
-}
-
-
-// 生没年月日を表示
-article.appendChild(lifespan);
-  
-    // カードへ追加
     article.appendChild(name);
+
+
+    // ========================================================
+    // 役割表示
+    // ========================================================
+
+    if (
+      Array.isArray(person.roles) &&
+      person.roles.length > 0
+    ) {
+
+      const roles =
+        document.createElement("p");
+
+      roles.className =
+        "person-roles";
+
+
+      // ------------------------------------------------------
+      // 役割名の日本語表示
+      // ------------------------------------------------------
+
+      const roleLabels = {
+        driver: "ドライバー",
+        engineer: "エンジニア",
+        designer: "デザイナー",
+        founder: "創業者",
+        manager: "監督・マネージャー"
+      };
+
+
+      roles.textContent =
+        person.roles
+          .map((role) =>
+            roleLabels[role] || role
+          )
+          .join(" / ");
+
+
+      article.appendChild(roles);
+    }
+
+
+    // ========================================================
+    // 生没年月日を表示
+    // ========================================================
+
     article.appendChild(lifespan);
+
+
+    // ========================================================
+    // 人物カードを一覧へ追加
+    // ========================================================
 
     peopleList.appendChild(article);
   });
 }
 
 
-// 人物データの読み込み開始
-loadPeople();
+// ============================================================
+// ページ読み込み開始
+// ============================================================
+//
+// 年表と人物は、それぞれ別のJSONファイルから読み込みます。
+//
+// ============================================================
 
 loadTimeline();
+loadPeople();
