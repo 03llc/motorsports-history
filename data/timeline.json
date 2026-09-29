@@ -34,38 +34,6 @@
 
   "sources": []
 }
-  {
-    "id": "ms1967-0001",
-
-    "time_span": {
-      "start": "1967-05-03",
-      "end": "1967-05-03",
-      "precision": "day"
-    },
-
-    "display": {
-      "date_text": "1967年5月3日",
-      "scale": "spot"
-    },
-
-    "title": "サンプル：日付が特定できる出来事",
-
-    "description": "年月日まで特定できる出来事のサンプルデータです。",
-
-    "categories": [
-      "race"
-    ],
-
-    "related": {
-      "people": [],
-      "cars": [],
-      "teams": [],
-      "circuits": [],
-      "organizations": []
-    },
-
-    "sources": []
-  },
 
   {
     "id": "ms1985-0001",
