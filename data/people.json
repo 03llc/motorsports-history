@@ -1,18 +1,18 @@
 [
   {
-    "id": "person-0001",
+    "id": "person-ukiya-tojiro",
 
-    "name": "人物名",
+    "name": "浮谷東次郎",
 
     "lifespan": {
-      "birth": "1900-01-01",
-      "death": "1980-12-31",
-      "birth_precision": "year",
-      "death_precision": "year"
+      "birth": null,
+      "death": null,
+      "birth_precision": "unknown",
+      "death_precision": "unknown"
     },
 
     "display": {
-      "lifespan_text": "1900年 - 1980年"
+      "lifespan_text": "生没年月日：典拠確認中"
     },
 
     "roles": [
@@ -26,6 +26,15 @@
       "events": []
     },
 
-    "sources": []
+    "sources": [
+      {
+        "title": "",
+        "author": "",
+        "publisher": "",
+        "year": null,
+        "url": "",
+        "note": "生没年月日を含む人物情報の典拠未登録"
+      }
+    ]
   }
 ]
