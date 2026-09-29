@@ -610,7 +610,37 @@ function displayPeople(peopleData) {
     } else {
       lifespan.textContent = "生没年月日：未登録";
     }
+    
+// 役割表示
+if (Array.isArray(person.roles) && person.roles.length > 0) {
+  const roles = document.createElement("p");
+// 人物名
+article.appendChild(name);
 
+
+// 役割表示
+if (Array.isArray(person.roles) && person.roles.length > 0) {
+  const roles = document.createElement("p");
+  roles.className = "person-roles";
+
+  const roleLabels = {
+    driver: "ドライバー",
+    engineer: "エンジニア",
+    designer: "デザイナー",
+    founder: "創業者",
+    manager: "監督・マネージャー"
+  };
+
+  roles.textContent = person.roles
+    .map((role) => roleLabels[role] || role)
+    .join(" / ");
+
+  article.appendChild(roles);
+}
+
+
+// 生没年月日
+article.appendChild(lifespan);
     // カードへ追加
     article.appendChild(name);
     article.appendChild(lifespan);
