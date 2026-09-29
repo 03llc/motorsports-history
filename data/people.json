@@ -4,16 +4,16 @@
 
     "name": "浮谷東次郎",
 
-    "lifespan": {
-      "birth": null,
-      "death": null,
-      "birth_precision": "unknown",
-      "death_precision": "unknown"
-    },
+"lifespan": {
+  "birth": "1942-07-16",
+  "death": "1965-08-21",
+  "birth_precision": "day",
+  "death_precision": "day"
+},
 
-    "display": {
-      "lifespan_text": "生没年月日：典拠確認中"
-    },
+"display": {
+  "lifespan_text": "1942年7月16日 - 1965年8月21日"
+}
 
     "roles": [
       "driver"
@@ -26,15 +26,15 @@
       "events": []
     },
 
-    "sources": [
-      {
-        "title": "",
-        "author": "",
-        "publisher": "",
-        "year": null,
-        "url": "",
-        "note": "生没年月日を含む人物情報の典拠未登録"
-      }
-    ]
+"sources": [
+  {
+    "title": "浮谷東次郎 - Wikipedia",
+    "author": "",
+    "publisher": "Wikipedia",
+    "year": null,
+    "url": "https://ja.wikipedia.org/wiki/%E6%B5%AE%E8%B0%B7%E6%9D%B1%E6%AC%A1%E9%83%8E",
+    "note": "生没年月日の確認用"
+  }
+]
   }
 ]
