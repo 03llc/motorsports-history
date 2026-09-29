@@ -33,38 +33,5 @@
   },
 
   "sources": []
-},
-
-  {
-    "id": "ms1985-0001",
-
-    "time_span": {
-      "start": "1985-01-01",
-      "end": "1985-12-31",
-      "precision": "year"
-    },
-
-    "display": {
-      "date_text": "1985年頃",
-      "scale": "spot"
-    },
-
-    "title": "サンプル：時期が曖昧な出来事",
-
-    "description": "正確な年月日が分からない歴史情報を扱うためのサンプルデータです。",
-
-    "categories": [
-      "technology"
-    ],
-
-    "related": {
-      "people": [],
-      "cars": [],
-      "teams": [],
-      "circuits": [],
-      "organizations": []
-    },
-
-    "sources": []
-  }
+}
 ]
