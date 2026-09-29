@@ -618,11 +618,23 @@ if (Array.isArray(person.roles) && person.roles.length > 0) {
 article.appendChild(name);
 
 
+// ============================================================
+// 人物カードへ情報を追加
+// ============================================================
+
+// まず人物名を表示
+article.appendChild(name);
+
+
+// ------------------------------------------------------------
 // 役割表示
+// ------------------------------------------------------------
 if (Array.isArray(person.roles) && person.roles.length > 0) {
+
   const roles = document.createElement("p");
   roles.className = "person-roles";
 
+  // JSON内の役割名を、日本語表示へ変換します
   const roleLabels = {
     driver: "ドライバー",
     engineer: "エンジニア",
@@ -639,8 +651,9 @@ if (Array.isArray(person.roles) && person.roles.length > 0) {
 }
 
 
-// 生没年月日
+// 生没年月日を表示
 article.appendChild(lifespan);
+  
     // カードへ追加
     article.appendChild(name);
     article.appendChild(lifespan);
