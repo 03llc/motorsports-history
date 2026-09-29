@@ -33,5 +33,40 @@
   },
 
   "sources": []
+},
+  {
+  "id": "ms1936-0001",
+
+  "time_span": {
+    "start": "1936-01-01",
+    "end": "1936-12-31",
+    "precision": "year"
+  },
+
+  "display": {
+    "date_text": "1936年",
+    "scale": "spot"
+  },
+
+  "title": "多摩川スピードウェイ開場",
+
+  "description": "戦前期の日本に設けられた自動車競走場の一つ。日本のモータースポーツ黎明期をたどるうえで重要な場所となった。",
+
+  "categories": [
+    "circuit",
+    "history"
+  ],
+
+  "related": {
+    "people": [],
+    "cars": [],
+    "teams": [],
+    "circuits": [
+      "多摩川スピードウェイ"
+    ],
+    "organizations": []
+  },
+
+  "sources": []
 }
 ]
