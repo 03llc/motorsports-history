@@ -1,37 +1,39 @@
 [
-  {
-    "id": "ms1960-0001",
+{
+  "id": "ms1966-0001",
 
-    "time_span": {
-      "start": "1960-01-01",
-      "end": "1969-12-31",
-      "precision": "decade"
-    },
-
-    "display": {
-      "date_text": "1960年代",
-      "scale": "span"
-    },
-
-    "title": "サンプル：1960年代の出来事",
-
-    "description": "期間を持つ歴史情報を表示するためのサンプルデータです。",
-
-    "categories": [
-      "history"
-    ],
-
-    "related": {
-      "people": [],
-      "cars": [],
-      "teams": [],
-      "circuits": [],
-      "organizations": []
-    },
-
-    "sources": []
+  "time_span": {
+    "start": "1966-01-01",
+    "end": "1966-12-31",
+    "precision": "year"
   },
 
+  "display": {
+    "date_text": "1966年",
+    "scale": "spot"
+  },
+
+  "title": "富士スピードウェイ開業",
+
+  "description": "静岡県駿東郡小山町に富士スピードウェイが開業。日本のモータースポーツ史を代表するサーキットの一つとなった。",
+
+  "categories": [
+    "circuit",
+    "history"
+  ],
+
+  "related": {
+    "people": [],
+    "cars": [],
+    "teams": [],
+    "circuits": [
+      "富士スピードウェイ"
+    ],
+    "organizations": []
+  },
+
+  "sources": []
+}
   {
     "id": "ms1967-0001",
 
