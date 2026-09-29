@@ -1,40 +1,21 @@
 /*
  * ============================================================
  * モータースポーツ史
- * 年表データの読み込み・表示・カテゴリー自動生成
- * ============================================================
- *
- * data/timeline.json に保存されている歴史データを読み込み、
- *
- * 1. 年代順に並べる
- * 2. 年表として表示する
- * 3. JSON内のカテゴリーを自動収集する
- * 4. カテゴリーボタンを自動生成する
- * 5. カテゴリーで絞り込む
- *
- * という処理を行います。
+ * 年表データの読み込み・表示・カテゴリー自動生成・典拠表示
  * ============================================================
  */
 
 
 /*
- * ============================================================
- * 読み込んだ年表データを保持
- * ============================================================
+ * 読み込んだ全データを保持します。
  */
 let allTimelineData = [];
 
 
 /*
  * ============================================================
- * カテゴリー名の表示用ラベル
+ * カテゴリー名の日本語表示
  * ============================================================
- *
- * JSONでは機械処理しやすい英語名を使い、
- * 画面では日本語名を表示します。
- *
- * 今後カテゴリーを追加した場合は、
- * 必要に応じてここへ日本語名を追加します。
  */
 const categoryLabels = {
   history: "歴史",
@@ -99,14 +80,13 @@ async function loadTimeline() {
 
 
     /*
-     * まず年表を全件表示
+     * 最初は全件表示
      */
     displayTimeline(allTimelineData);
 
 
     /*
-     * JSONからカテゴリーを探して
-     * フィルターボタンを自動生成
+     * JSONからカテゴリーを自動生成
      */
     createCategoryFilters(allTimelineData);
 
@@ -128,7 +108,7 @@ async function loadTimeline() {
 
 /*
  * ============================================================
- * 年表をHTMLへ表示
+ * 年表を画面に表示
  * ============================================================
  */
 function displayTimeline(timelineData) {
@@ -140,6 +120,9 @@ function displayTimeline(timelineData) {
     return;
   }
 
+  /*
+   * 現在の表示をいったん消します。
+   */
   timelineList.innerHTML = "";
 
 
@@ -158,78 +141,211 @@ function displayTimeline(timelineData) {
 
 
   /*
-   * データを1件ずつ表示
+   * 年表データを1件ずつ表示
    */
   timelineData.forEach((item) => {
 
+    /*
+     * ----------------------------------------------------------
+     * 1件分のカード
+     * ----------------------------------------------------------
+     */
     const article = document.createElement("article");
 
     article.className =
       `timeline-item ${item.display.scale}`;
 
+
+    /*
+     * ----------------------------------------------------------
+     * 日付
+     * ----------------------------------------------------------
+     */
     const date = document.createElement("p");
+
     date.className = "timeline-date";
     date.textContent = item.display.date_text;
 
+
+    /*
+     * ----------------------------------------------------------
+     * タイトル
+     * ----------------------------------------------------------
+     */
     const title = document.createElement("h3");
+
     title.textContent = item.title;
 
+
+    /*
+     * ----------------------------------------------------------
+     * 説明文
+     * ----------------------------------------------------------
+     */
     const description = document.createElement("p");
+
     description.className = "timeline-description";
     description.textContent = item.description;
 
-    /*
- * ------------------------------------------------------------
- * カテゴリータグ
- * ------------------------------------------------------------
- *
- * timeline.json の categories を、
- * カード内に小さなタグとして表示します。
- */
-const categoryTags = document.createElement("div");
-categoryTags.className = "timeline-categories";
-
-
-/*
- * categories が配列として存在する場合だけ処理します。
- */
-if (Array.isArray(item.categories)) {
-
-  item.categories.forEach((category) => {
 
     /*
-     * 1つのカテゴリータグを作成します。
+     * ==========================================================
+     * カテゴリータグ
+     * ==========================================================
      */
-    const tag = document.createElement("span");
+    const categoryTags = document.createElement("div");
 
-    tag.className = "timeline-category-tag";
+    categoryTags.className = "timeline-categories";
+
+
+    if (Array.isArray(item.categories)) {
+
+      item.categories.forEach((category) => {
+
+        const tag = document.createElement("span");
+
+        tag.className = "timeline-category-tag";
+
+        tag.textContent =
+          categoryLabels[category] || category;
+
+        categoryTags.appendChild(tag);
+
+      });
+
+    }
 
 
     /*
-     * categoryLabels に日本語名があれば、
-     * その日本語を表示します。
+     * ==========================================================
+     * 典拠
+     * ==========================================================
      *
-     * 未登録カテゴリーの場合は、
-     * JSON内の英語名をそのまま表示します。
+     * sources にデータがある場合だけ表示します。
      */
-    tag.textContent =
-      categoryLabels[category] || category;
+    const sourceBox = document.createElement("div");
+
+    sourceBox.className = "timeline-sources";
+
+
+    if (Array.isArray(item.sources) && item.sources.length > 0) {
+
+      /*
+       * 「典拠」という見出し
+       */
+      const sourceTitle = document.createElement("p");
+
+      sourceTitle.className = "timeline-sources-title";
+      sourceTitle.textContent = "典拠";
+
+      sourceBox.appendChild(sourceTitle);
+
+
+      /*
+       * sourcesを1件ずつ表示
+       */
+      item.sources.forEach((source) => {
+
+        const sourceItem = document.createElement("p");
+
+        sourceItem.className = "timeline-source-item";
+
+
+        /*
+         * 表示用文字列を作ります。
+         */
+        const parts = [];
+
+        if (source.title) {
+          parts.push(source.title);
+        }
+
+        if (source.author) {
+          parts.push(source.author);
+        }
+
+        if (source.publisher) {
+          parts.push(source.publisher);
+        }
+
+        if (source.year) {
+          parts.push(String(source.year));
+        }
+
+        if (source.note) {
+          parts.push(source.note);
+        }
+
+
+        /*
+         * URLがある場合はリンク表示
+         */
+        if (source.url) {
+
+          const link = document.createElement("a");
+
+          link.href = source.url;
+          link.target = "_blank";
+          link.rel = "noopener noreferrer";
+
+          link.textContent =
+            source.title || "参照リンク";
+
+          sourceItem.appendChild(link);
+
+
+          /*
+           * 資料名以外の情報を後ろに表示
+           */
+          const extraParts = parts.filter((part) => {
+            return part !== source.title;
+          });
+
+          if (extraParts.length > 0) {
+
+            sourceItem.append(
+              document.createTextNode(
+                " / " + extraParts.join(" / ")
+              )
+            );
+
+          }
+
+        } else {
+
+          /*
+           * URLがない場合
+           */
+          sourceItem.textContent =
+            parts.length > 0
+              ? parts.join(" / ")
+              : "典拠情報未登録";
+
+        }
+
+
+        sourceBox.appendChild(sourceItem);
+
+      });
+
+    }
 
 
     /*
-     * タグをカテゴリー欄へ追加します。
+     * ==========================================================
+     * カードに各要素を追加
+     * ==========================================================
      */
-    categoryTags.appendChild(tag);
+    article.appendChild(date);
+    article.appendChild(title);
+    article.appendChild(description);
+    article.appendChild(categoryTags);
+    article.appendChild(sourceBox);
 
-  });
 
-}
-
-article.appendChild(date);
-article.appendChild(title);
-article.appendChild(description);
-article.appendChild(categoryTags);
-
+    /*
+     * 年表全体へ追加
+     */
     timelineList.appendChild(article);
 
   });
@@ -239,15 +355,11 @@ article.appendChild(categoryTags);
 
 /*
  * ============================================================
- * JSONからカテゴリーを自動収集し、
- * フィルターボタンを作成
+ * JSONからカテゴリーを集めてフィルターボタンを作る
  * ============================================================
  */
 function createCategoryFilters(timelineData) {
 
-  /*
-   * ボタンを置く場所
-   */
   const filterContainer =
     document.getElementById("timeline-filters");
 
@@ -258,19 +370,13 @@ function createCategoryFilters(timelineData) {
 
 
   /*
-   * 念のため、現在の内容を空にします。
+   * 既存ボタンを空にします。
    */
   filterContainer.innerHTML = "";
 
 
   /*
-   * ----------------------------------------------------------
-   * 全データからカテゴリーを集める
-   * ----------------------------------------------------------
-   *
-   * Setを使うことで、
-   * 同じカテゴリーが複数の出来事に入っていても
-   * 重複せず1つだけ保持できます。
+   * カテゴリーを重複なしで収集
    */
   const categorySet = new Set();
 
@@ -292,9 +398,7 @@ function createCategoryFilters(timelineData) {
 
 
   /*
-   * Setを配列へ変換します。
-   *
-   * 今のところは英字順に並べます。
+   * 配列へ変換して英字順
    */
   const categories =
     Array.from(categorySet).sort();
@@ -311,9 +415,6 @@ function createCategoryFilters(timelineData) {
   allButton.dataset.category = "all";
   allButton.textContent = "すべて";
 
-  /*
-   * 最初は「すべて」を選択状態にします。
-   */
   allButton.classList.add("active");
 
   filterContainer.appendChild(allButton);
@@ -321,7 +422,7 @@ function createCategoryFilters(timelineData) {
 
   /*
    * ----------------------------------------------------------
-   * 各カテゴリーボタンを生成
+   * 各カテゴリーボタン
    * ----------------------------------------------------------
    */
   categories.forEach((category) => {
@@ -331,16 +432,6 @@ function createCategoryFilters(timelineData) {
     button.type = "button";
     button.dataset.category = category;
 
-
-    /*
-     * categoryLabels に日本語名があれば日本語表示。
-     *
-     * 登録されていない新カテゴリーの場合は、
-     * JSONのカテゴリー名をそのまま表示します。
-     *
-     * これにより、新しいカテゴリーをJSONへ追加しても
-     * ボタン自体は必ず表示されます。
-     */
     button.textContent =
       categoryLabels[category] || category;
 
@@ -350,8 +441,7 @@ function createCategoryFilters(timelineData) {
 
 
   /*
-   * ボタンを作った後、
-   * クリック機能を設定します。
+   * クリック処理を設定
    */
   setupCategoryFilters();
 
@@ -360,7 +450,7 @@ function createCategoryFilters(timelineData) {
 
 /*
  * ============================================================
- * カテゴリーボタンのクリック処理
+ * カテゴリーフィルターのクリック処理
  * ============================================================
  */
 function setupCategoryFilters() {
@@ -373,7 +463,8 @@ function setupCategoryFilters() {
 
     button.addEventListener("click", () => {
 
-      const selectedCategory = button.dataset.category;
+      const selectedCategory =
+        button.dataset.category;
 
 
       /*
@@ -386,7 +477,7 @@ function setupCategoryFilters() {
       } else {
 
         /*
-         * 選択されたカテゴリーを含むデータだけ抽出
+         * 指定カテゴリーだけ抽出
          */
         const filteredData =
           allTimelineData.filter((item) => {
@@ -404,7 +495,7 @@ function setupCategoryFilters() {
 
 
       /*
-       * 選択中のボタンを切り替え
+       * 選択中ボタンの表示切替
        */
       filterButtons.forEach((filterButton) => {
         filterButton.classList.remove("active");
@@ -421,7 +512,7 @@ function setupCategoryFilters() {
 
 /*
  * ============================================================
- * ページ読み込み時の開始処理
+ * ページ読み込み時に開始
  * ============================================================
  */
 loadTimeline();
