@@ -1,1 +1,31 @@
+[
+  {
+    "id": "person-0001",
 
+    "name": "人物名",
+
+    "lifespan": {
+      "birth": "1900-01-01",
+      "death": "1980-12-31",
+      "birth_precision": "year",
+      "death_precision": "year"
+    },
+
+    "display": {
+      "lifespan_text": "1900年 - 1980年"
+    },
+
+    "roles": [
+      "driver"
+    ],
+
+    "related": {
+      "teams": [],
+      "cars": [],
+      "circuits": [],
+      "events": []
+    },
+
+    "sources": []
+  }
+]
