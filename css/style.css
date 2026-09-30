@@ -728,3 +728,54 @@ h1 {
 .lifeline-event-info strong {
   margin-right: 8px;
 }
+
+/* ============================================================
+   人物ライフライン：イベント詳細カード
+   ============================================================ */
+
+/*
+  年＋タイトルの行
+*/
+.lifeline-event-info-heading {
+  display: flex;
+
+  flex-wrap: wrap;
+
+  gap: 6px;
+
+  align-items: baseline;
+
+  margin-bottom: 6px;
+
+  font-size: 0.86rem;
+}
+
+
+/*
+  年
+*/
+.lifeline-event-info-heading strong {
+  font-weight: 700;
+}
+
+
+/*
+  イベント名
+*/
+.lifeline-event-info-heading span {
+  font-weight: 600;
+}
+
+
+/*
+  説明文
+*/
+.lifeline-event-info-description {
+  margin: 0;
+
+  font-size: 0.78rem;
+
+  line-height: 1.6;
+
+  color: #666;
+}
