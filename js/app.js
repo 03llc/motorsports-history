@@ -3,17 +3,12 @@
 // app.js
 // ============================================================
 //
-// 主な処理
-//
-// 1. 年表データの読み込み
-// 2. 年表表示
-// 3. カテゴリ絞り込み
-// 4. 人物データの読み込み
-// 5. 人物カード表示
-// 6. 人物ライフライン比較
-// 7. 年代目盛り
-// 8. 年表上の出来事をライフラインへ重ねる
-// 9. 年表イベントの年を時間軸上に表示する
+// ・timeline.json から年表を表示
+// ・カテゴリ絞り込み
+// ・people.json から人物を表示
+// ・人物ライフラインを表示
+// ・年表イベントをライフラインへ重ねる
+// ・イベント年をタップするとイベント名を表示
 //
 // ============================================================
 
@@ -58,46 +53,24 @@ async function loadTimeline() {
     const response =
       await fetch("./data/timeline.json");
 
-
     if (!response.ok) {
       throw new Error(
         "年表データを読み込めませんでした。"
       );
     }
 
-
     const timelineData =
       await response.json();
 
 
-    // --------------------------------------------------------
     // 古い順に並べる
-    // --------------------------------------------------------
-
     timelineData.sort((a, b) => {
 
       const dateA =
-        a.time_span && a.time_span.start
-          ? a.time_span.start
-          : null;
+        a.time_span?.start || "";
 
       const dateB =
-        b.time_span && b.time_span.start
-          ? b.time_span.start
-          : null;
-
-
-      if (!dateA && !dateB) {
-        return 0;
-      }
-
-      if (!dateA) {
-        return 1;
-      }
-
-      if (!dateB) {
-        return -1;
-      }
+        b.time_span?.start || "";
 
       return dateA.localeCompare(dateB);
     });
@@ -107,23 +80,17 @@ async function loadTimeline() {
       timelineData;
 
 
-    // 年表表示
     displayTimeline(
       allTimelineData
     );
 
-
-    // カテゴリボタン
     createCategoryFilters(
       allTimelineData
     );
 
 
-    // --------------------------------------------------------
-    // 人物データがすでに読み込まれていたら
+    // 人物データが先に読み込まれていた場合は
     // ライフラインを再描画
-    // --------------------------------------------------------
-
     if (allPeopleData.length > 0) {
 
       displayPeopleLifeline(
@@ -135,12 +102,10 @@ async function loadTimeline() {
 
     console.error(error);
 
-
     const timelineList =
       document.getElementById(
         "timeline-list"
       );
-
 
     if (timelineList) {
 
@@ -155,13 +120,14 @@ async function loadTimeline() {
 // 年表表示
 // ============================================================
 
-function displayTimeline(timelineData) {
+function displayTimeline(
+  timelineData
+) {
 
   const timelineList =
     document.getElementById(
       "timeline-list"
     );
-
 
   if (!timelineList) {
     return;
@@ -185,11 +151,6 @@ function displayTimeline(timelineData) {
 
   timelineData.forEach((item) => {
 
-
-    // ========================================================
-    // 年表カード
-    // ========================================================
-
     const article =
       document.createElement(
         "article"
@@ -197,19 +158,17 @@ function displayTimeline(timelineData) {
 
 
     const scale =
-      item.display &&
-      item.display.scale
-        ? item.display.scale
-        : "spot";
+      item.display?.scale ||
+      "spot";
 
 
     article.className =
       `timeline-item ${scale}`;
 
 
-    // ========================================================
-    // 日付
-    // ========================================================
+    // --------------------------------------------------------
+    // 年
+    // --------------------------------------------------------
 
     const date =
       document.createElement("p");
@@ -217,17 +176,14 @@ function displayTimeline(timelineData) {
     date.className =
       "timeline-date";
 
-
     date.textContent =
-      item.display &&
-      item.display.date_text
-        ? item.display.date_text
-        : "年代不明";
+      item.display?.date_text ||
+      "年代不明";
 
 
-    // ========================================================
+    // --------------------------------------------------------
     // タイトル
-    // ========================================================
+    // --------------------------------------------------------
 
     const title =
       document.createElement("h3");
@@ -237,9 +193,9 @@ function displayTimeline(timelineData) {
       "タイトル未登録";
 
 
-    // ========================================================
+    // --------------------------------------------------------
     // 説明
-    // ========================================================
+    // --------------------------------------------------------
 
     const description =
       document.createElement("p");
@@ -282,7 +238,6 @@ function displayTimeline(timelineData) {
 
           tag.className =
             "timeline-category-tag";
-
 
           tag.textContent =
             categoryLabels[category] ||
@@ -345,21 +300,15 @@ function displayTimeline(timelineData) {
 
 
           if (source.title) {
-            sourceParts.push(
-              source.title
-            );
+            sourceParts.push(source.title);
           }
 
           if (source.author) {
-            sourceParts.push(
-              source.author
-            );
+            sourceParts.push(source.author);
           }
 
           if (source.publisher) {
-            sourceParts.push(
-              source.publisher
-            );
+            sourceParts.push(source.publisher);
           }
 
           if (source.year) {
@@ -369,9 +318,7 @@ function displayTimeline(timelineData) {
           }
 
           if (source.note) {
-            sourceParts.push(
-              source.note
-            );
+            sourceParts.push(source.note);
           }
 
 
@@ -443,7 +390,6 @@ function createCategoryFilters(
       "timeline-filters"
     );
 
-
   if (!filterBox) {
     return;
   }
@@ -459,17 +405,12 @@ function createCategoryFilters(
   timelineData.forEach((item) => {
 
     if (
-      Array.isArray(
-        item.categories
-      )
+      Array.isArray(item.categories)
     ) {
 
       item.categories.forEach(
         (category) => {
-
-          categorySet.add(
-            category
-          );
+          categorySet.add(category);
         }
       );
     }
@@ -482,28 +423,18 @@ function createCategoryFilters(
 
   categories.sort((a, b) => {
 
-    const labelA =
-      categoryLabels[a] || a;
-
-    const labelB =
-      categoryLabels[b] || b;
-
-
-    return labelA.localeCompare(
-      labelB,
+    return (
+      categoryLabels[a] || a
+    ).localeCompare(
+      categoryLabels[b] || b,
       "ja"
     );
   });
 
 
-  // ==========================================================
-  // 「すべて」ボタン
-  // ==========================================================
-
+  // 「すべて」
   const allButton =
-    document.createElement(
-      "button"
-    );
+    document.createElement("button");
 
   allButton.type =
     "button";
@@ -523,10 +454,7 @@ function createCategoryFilters(
   );
 
 
-  // ==========================================================
   // 各カテゴリ
-  // ==========================================================
-
   categories.forEach(
     (category) => {
 
@@ -568,7 +496,6 @@ function setupCategoryFilters() {
       "timeline-filters"
     );
 
-
   if (!filterBox) {
     return;
   }
@@ -604,8 +531,7 @@ function setupCategoryFilters() {
 
 
         if (
-          selectedCategory ===
-          "all"
+          selectedCategory === "all"
         ) {
 
           displayTimeline(
@@ -654,9 +580,7 @@ async function loadPeople() {
         "./data/people.json"
       );
 
-
     if (!response.ok) {
-
       throw new Error(
         "人物データを読み込めませんでした。"
       );
@@ -667,18 +591,14 @@ async function loadPeople() {
       await response.json();
 
 
-    // 全人物データを保持
     allPeopleData =
       peopleData;
 
 
-    // 人物カード
     displayPeople(
       allPeopleData
     );
 
-
-    // 人物ライフライン
     displayPeopleLifeline(
       allPeopleData
     );
@@ -687,12 +607,10 @@ async function loadPeople() {
 
     console.error(error);
 
-
     const peopleList =
       document.getElementById(
         "people-list"
       );
-
 
     if (peopleList) {
 
@@ -716,7 +634,6 @@ function displayPeople(
       "people-list"
     );
 
-
   if (!peopleList) {
     return;
   }
@@ -737,9 +654,27 @@ function displayPeople(
   }
 
 
+  const roleLabels = {
+
+    driver:
+      "ドライバー",
+
+    engineer:
+      "エンジニア",
+
+    designer:
+      "デザイナー",
+
+    founder:
+      "創業者",
+
+    manager:
+      "監督・マネージャー"
+  };
+
+
   peopleData.forEach(
     (person) => {
-
 
       const article =
         document.createElement(
@@ -750,62 +685,29 @@ function displayPeople(
         "person-item";
 
 
-      // ======================================================
       // 人物名
-      // ======================================================
-
       const name =
-        document.createElement(
-          "h3"
-        );
+        document.createElement("h3");
 
       name.textContent =
         person.name ||
         "名称未登録";
 
 
-      article.appendChild(
-        name
-      );
+      article.appendChild(name);
 
 
-      // ======================================================
       // 役割
-      // ======================================================
-
       if (
-        Array.isArray(
-          person.roles
-        ) &&
+        Array.isArray(person.roles) &&
         person.roles.length > 0
       ) {
 
         const roles =
-          document.createElement(
-            "p"
-          );
+          document.createElement("p");
 
         roles.className =
           "person-roles";
-
-
-        const roleLabels = {
-
-          driver:
-            "ドライバー",
-
-          engineer:
-            "エンジニア",
-
-          designer:
-            "デザイナー",
-
-          founder:
-            "創業者",
-
-          manager:
-            "監督・マネージャー"
-        };
 
 
         roles.textContent =
@@ -824,33 +726,16 @@ function displayPeople(
       }
 
 
-      // ======================================================
       // 生没年月日
-      // ======================================================
-
       const lifespan =
-        document.createElement(
-          "p"
-        );
+        document.createElement("p");
 
       lifespan.className =
         "person-lifespan";
 
-
-      if (
-        person.display &&
-        person.display.lifespan_text
-      ) {
-
-        lifespan.textContent =
-          person.display
-            .lifespan_text;
-
-      } else {
-
-        lifespan.textContent =
-          "生没年月日：未登録";
-      }
+      lifespan.textContent =
+        person.display?.lifespan_text ||
+        "生没年月日：未登録";
 
 
       article.appendChild(
@@ -879,47 +764,25 @@ function displayPeopleLifeline(
       "people-lifeline-chart"
     );
 
-
   if (!chart) {
     return;
   }
 
 
   // ==========================================================
-  // 人物データ確認
-  // ==========================================================
-
-  if (
-    !Array.isArray(peopleData) ||
-    peopleData.length === 0
-  ) {
-
-    chart.innerHTML =
-      "<p>人物ライフラインデータはまだありません。</p>";
-
-    return;
-  }
-
-
-  // ==========================================================
-  // 生年月日がある人物
+  // 生年月日がある人物だけ使用
   // ==========================================================
 
   const validPeople =
-    peopleData.filter(
-      (person) => {
-
-        return (
-          person.lifespan &&
-          person.lifespan.birth
-        );
-      }
-    );
+    Array.isArray(peopleData)
+      ? peopleData.filter(
+          (person) =>
+            person.lifespan?.birth
+        )
+      : [];
 
 
-  if (
-    validPeople.length === 0
-  ) {
+  if (validPeople.length === 0) {
 
     chart.innerHTML =
       "<p>生年月日が登録された人物がありません。</p>";
@@ -933,7 +796,7 @@ function displayPeopleLifeline(
 
 
   // ==========================================================
-  // 人物の日付を年へ変換
+  // 人物の生年・没年
   // ==========================================================
 
   const peopleWithYears =
@@ -959,11 +822,8 @@ function displayPeopleLifeline(
 
 
         return {
-
           ...person,
-
           birthYear,
-
           deathYear
         };
       }
@@ -971,22 +831,18 @@ function displayPeopleLifeline(
 
 
   // ==========================================================
-  // 年表イベントから年を取り出す
+  // 年表イベントの年
   // ==========================================================
 
   const timelineEvents =
     allTimelineData
-      .filter((item) => {
-
-        return (
-          item.time_span &&
-          item.time_span.start
-        );
-      })
+      .filter(
+        (item) =>
+          item.time_span?.start
+      )
       .map((item) => {
 
         return {
-
           ...item,
 
           eventYear:
@@ -997,16 +853,16 @@ function displayPeopleLifeline(
             )
         };
       })
-      .filter((item) => {
-
-        return !Number.isNaN(
-          item.eventYear
-        );
-      });
+      .filter(
+        (item) =>
+          !Number.isNaN(
+            item.eventYear
+          )
+      );
 
 
   // ==========================================================
-  // 人物の最も早い生年
+  // 時間軸の範囲
   // ==========================================================
 
   const earliestPersonYear =
@@ -1018,24 +874,16 @@ function displayPeopleLifeline(
     );
 
 
-  // ==========================================================
-  // 年表イベントの最も早い年
-  // ==========================================================
-
   const earliestEventYear =
     timelineEvents.length > 0
       ? Math.min(
           ...timelineEvents.map(
-            (item) =>
-              item.eventYear
+            (event) =>
+              event.eventYear
           )
         )
       : earliestPersonYear;
 
-
-  // ==========================================================
-  // 時間軸の開始年
-  // ==========================================================
 
   const minYear =
     Math.min(
@@ -1044,14 +892,9 @@ function displayPeopleLifeline(
     );
 
 
-  // ==========================================================
-  // 終了年
-  // ==========================================================
-
   const maxYear =
     Math.max(
       currentYear,
-
       ...peopleWithYears.map(
         (person) =>
           person.deathYear
@@ -1080,9 +923,7 @@ function displayPeopleLifeline(
   // ==========================================================
 
   const scaleRow =
-    document.createElement(
-      "div"
-    );
+    document.createElement("div");
 
   scaleRow.className =
     "lifeline-scale";
@@ -1094,10 +935,7 @@ function displayPeopleLifeline(
     ) * 20;
 
 
-  // ==========================================================
-  // 20年ごとの年代目盛り
-  // ==========================================================
-
+  // 20年ごとの通常目盛り
   for (
     let year = scaleStart;
     year <= maxYear;
@@ -1105,9 +943,7 @@ function displayPeopleLifeline(
   ) {
 
     const marker =
-      document.createElement(
-        "div"
-      );
+      document.createElement("div");
 
     marker.className =
       "lifeline-scale-marker";
@@ -1125,18 +961,13 @@ function displayPeopleLifeline(
 
 
     const label =
-      document.createElement(
-        "span"
-      );
+      document.createElement("span");
 
     label.textContent =
       year;
 
 
-    marker.appendChild(
-      label
-    );
-
+    marker.appendChild(label);
 
     scaleRow.appendChild(
       marker
@@ -1145,20 +976,27 @@ function displayPeopleLifeline(
 
 
   // ==========================================================
-  // 年表イベントの「年」を時間軸へ表示
+  // イベント詳細表示欄
   // ==========================================================
   //
-  // 例：
-  //
-  // 1936  多摩川スピードウェイ開場
-  // 1966  富士スピードウェイ開業
-  //
-  // ここではまず「年」だけを表示します。
-  //
-  // イベント名は title 属性にも入れておくので、
-  // PCではマウスを重ねたときに確認できます。
-  //
-  // 将来はタップして詳細表示することもできます。
+  // 1936 / 1966 などをタップすると、
+  // この欄へイベント名を表示します。
+  // ==========================================================
+
+  const eventInfo =
+    document.createElement("div");
+
+  eventInfo.className =
+    "lifeline-event-info";
+
+  eventInfo.setAttribute(
+    "aria-live",
+    "polite"
+  );
+
+
+  // ==========================================================
+  // イベント年
   // ==========================================================
 
   timelineEvents.forEach(
@@ -1168,22 +1006,30 @@ function displayPeopleLifeline(
         event.eventYear < minYear ||
         event.eventYear > maxYear
       ) {
-
         return;
       }
 
 
-      const eventScaleMarker =
+      // ------------------------------------------------------
+      // div ではなく button にします。
+      //
+      // スマホでタップしやすく、
+      // キーボード操作にも対応できます。
+      // ------------------------------------------------------
+
+      const eventButton =
         document.createElement(
-          "div"
+          "button"
         );
 
+      eventButton.type =
+        "button";
 
-      eventScaleMarker.className =
+      eventButton.className =
         "lifeline-scale-event";
 
 
-      const eventPosition =
+      const position =
         (
           (
             event.eventYear -
@@ -1193,36 +1039,92 @@ function displayPeopleLifeline(
         ) * 100;
 
 
-      eventScaleMarker.style.left =
-        `${eventPosition}%`;
+      eventButton.style.left =
+        `${position}%`;
 
 
-      // イベント名を補助情報として保持
-      eventScaleMarker.title =
+      eventButton.title =
         `${event.eventYear}年 ${event.title || ""}`;
 
 
-      // ------------------------------------------------------
-      // 年表示
-      // ------------------------------------------------------
+      const yearLabel =
+        document.createElement("span");
 
-      const eventYearLabel =
-        document.createElement(
-          "span"
-        );
-
-
-      eventYearLabel.textContent =
+      yearLabel.textContent =
         event.eventYear;
 
 
-      eventScaleMarker.appendChild(
-        eventYearLabel
+      eventButton.appendChild(
+        yearLabel
+      );
+
+
+      // ======================================================
+      // 年をタップしたときの処理
+      // ======================================================
+
+      eventButton.addEventListener(
+        "click",
+        () => {
+
+          // いったん空にする
+          eventInfo.innerHTML = "";
+
+
+          // 年
+          const year =
+            document.createElement(
+              "strong"
+            );
+
+          year.textContent =
+            `${event.eventYear}年`;
+
+
+          // イベント名
+          const title =
+            document.createElement(
+              "span"
+            );
+
+          title.textContent =
+            event.title ||
+            "タイトル未登録";
+
+
+          eventInfo.appendChild(
+            year
+          );
+
+          eventInfo.appendChild(
+            title
+          );
+
+
+          // 選択中の表示を付け替える
+          scaleRow
+            .querySelectorAll(
+              ".lifeline-scale-event"
+            )
+            .forEach(
+              (button) => {
+
+                button.classList.remove(
+                  "active"
+                );
+              }
+            );
+
+
+          eventButton.classList.add(
+            "active"
+          );
+        }
       );
 
 
       scaleRow.appendChild(
-        eventScaleMarker
+        eventButton
       );
     }
   );
@@ -1233,9 +1135,7 @@ function displayPeopleLifeline(
   // ==========================================================
 
   const currentMarker =
-    document.createElement(
-      "div"
-    );
+    document.createElement("div");
 
   currentMarker.className =
     "lifeline-scale-marker lifeline-scale-current";
@@ -1245,9 +1145,7 @@ function displayPeopleLifeline(
 
 
   const currentLabel =
-    document.createElement(
-      "span"
-    );
+    document.createElement("span");
 
   currentLabel.textContent =
     "現在";
@@ -1257,14 +1155,20 @@ function displayPeopleLifeline(
     currentLabel
   );
 
-
   scaleRow.appendChild(
     currentMarker
   );
 
 
+  // 年代目盛りを表示
   chart.appendChild(
     scaleRow
+  );
+
+
+  // イベント詳細欄を表示
+  chart.appendChild(
+    eventInfo
   );
 
 
@@ -1275,24 +1179,16 @@ function displayPeopleLifeline(
   peopleWithYears.forEach(
     (person) => {
 
-
       const row =
-        document.createElement(
-          "div"
-        );
+        document.createElement("div");
 
       row.className =
         "lifeline-row";
 
 
-      // ======================================================
       // 人物名
-      // ======================================================
-
       const label =
-        document.createElement(
-          "div"
-        );
+        document.createElement("div");
 
       label.className =
         "lifeline-label";
@@ -1302,14 +1198,9 @@ function displayPeopleLifeline(
         "名称未登録";
 
 
-      // ======================================================
       // 時間軸
-      // ======================================================
-
       const track =
-        document.createElement(
-          "div"
-        );
+        document.createElement("div");
 
       track.className =
         "lifeline-track";
@@ -1326,7 +1217,6 @@ function displayPeopleLifeline(
             event.eventYear < minYear ||
             event.eventYear > maxYear
           ) {
-
             return;
           }
 
@@ -1340,7 +1230,7 @@ function displayPeopleLifeline(
             "lifeline-event-marker";
 
 
-          const eventPosition =
+          const position =
             (
               (
                 event.eventYear -
@@ -1351,7 +1241,7 @@ function displayPeopleLifeline(
 
 
           eventMarker.style.left =
-            `${eventPosition}%`;
+            `${position}%`;
 
 
           eventMarker.title =
@@ -1370,9 +1260,7 @@ function displayPeopleLifeline(
       // ======================================================
 
       const bar =
-        document.createElement(
-          "div"
-        );
+        document.createElement("div");
 
       bar.className =
         "lifeline-bar";
@@ -1403,20 +1291,12 @@ function displayPeopleLifeline(
 
 
       bar.style.width =
-        `${Math.max(
-          width,
-          1
-        )}%`;
+        `${Math.max(width, 1)}%`;
 
 
-      // ======================================================
-      // 生没年
-      // ======================================================
-
+      // 生没年表示
       const text =
-        document.createElement(
-          "span"
-        );
+        document.createElement("span");
 
       text.className =
         "lifeline-text";
@@ -1432,36 +1312,22 @@ function displayPeopleLifeline(
         `${person.birthYear} - ${deathText}`;
 
 
-      bar.appendChild(
-        text
-      );
+      bar.appendChild(text);
 
+      track.appendChild(bar);
 
-      track.appendChild(
-        bar
-      );
+      row.appendChild(label);
 
+      row.appendChild(track);
 
-      row.appendChild(
-        label
-      );
-
-
-      row.appendChild(
-        track
-      );
-
-
-      chart.appendChild(
-        row
-      );
+      chart.appendChild(row);
     }
   );
 }
 
 
 // ============================================================
-// ページ読み込み開始
+// 読み込み開始
 // ============================================================
 
 loadTimeline();
