@@ -287,5 +287,42 @@
     },
 
     "sources": []
-  }
+  },
+  
+  {
+  "id": "circuit-funabashi",
+  "name": "船橋サーキット",
+  "name_original": "Funabashi Circuit",
+
+  "location": {
+    "country": "日本",
+    "prefecture": "千葉県",
+    "city": "船橋市"
+  },
+
+  "history": {
+    "opened": "1965",
+    "closed": "1967",
+    "opened_precision": "year",
+    "closed_precision": "year"
+  },
+
+  "display": {
+    "history_text": "1965年 - 1967年"
+  },
+
+  "type": [
+    "permanent_circuit",
+    "historic"
+  ],
+
+  "related": {
+    "people": [],
+    "teams": [],
+    "cars": [],
+    "events": []
+  },
+
+  "sources": []
+}
 ]
