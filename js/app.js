@@ -13,6 +13,7 @@
 // 6. 人物ライフライン比較
 // 7. 年代目盛り
 // 8. 年表上の出来事をライフラインへ重ねる
+// 9. 年表イベントの年を時間軸上に表示する
 //
 // ============================================================
 
@@ -120,10 +121,7 @@ async function loadTimeline() {
 
     // --------------------------------------------------------
     // 人物データがすでに読み込まれていたら
-    // ライフラインを再描画します。
-    //
-    // timeline.json と people.json は別々に読み込まれるので、
-    // どちらが先に読み終わっても大丈夫なようにしています。
+    // ライフラインを再描画
     // --------------------------------------------------------
 
     if (allPeopleData.length > 0) {
@@ -499,7 +497,7 @@ function createCategoryFilters(
 
 
   // ==========================================================
-  // すべて
+  // 「すべて」ボタン
   // ==========================================================
 
   const allButton =
@@ -1038,14 +1036,6 @@ function displayPeopleLifeline(
   // ==========================================================
   // 時間軸の開始年
   // ==========================================================
-  //
-  // 人物より前に重要な年表イベントがある場合も
-  // 表示できるようにします。
-  //
-  // 現在のデータなら、
-  // 多摩川スピードウェイの1936年も
-  // ライフライン上へ表示できます。
-  // ==========================================================
 
   const minYear =
     Math.min(
@@ -1104,6 +1094,10 @@ function displayPeopleLifeline(
     ) * 20;
 
 
+  // ==========================================================
+  // 20年ごとの年代目盛り
+  // ==========================================================
+
   for (
     let year = scaleStart;
     year <= maxYear;
@@ -1148,6 +1142,90 @@ function displayPeopleLifeline(
       marker
     );
   }
+
+
+  // ==========================================================
+  // 年表イベントの「年」を時間軸へ表示
+  // ==========================================================
+  //
+  // 例：
+  //
+  // 1936  多摩川スピードウェイ開場
+  // 1966  富士スピードウェイ開業
+  //
+  // ここではまず「年」だけを表示します。
+  //
+  // イベント名は title 属性にも入れておくので、
+  // PCではマウスを重ねたときに確認できます。
+  //
+  // 将来はタップして詳細表示することもできます。
+  // ==========================================================
+
+  timelineEvents.forEach(
+    (event) => {
+
+      if (
+        event.eventYear < minYear ||
+        event.eventYear > maxYear
+      ) {
+
+        return;
+      }
+
+
+      const eventScaleMarker =
+        document.createElement(
+          "div"
+        );
+
+
+      eventScaleMarker.className =
+        "lifeline-scale-event";
+
+
+      const eventPosition =
+        (
+          (
+            event.eventYear -
+            minYear
+          ) /
+          totalYears
+        ) * 100;
+
+
+      eventScaleMarker.style.left =
+        `${eventPosition}%`;
+
+
+      // イベント名を補助情報として保持
+      eventScaleMarker.title =
+        `${event.eventYear}年 ${event.title || ""}`;
+
+
+      // ------------------------------------------------------
+      // 年表示
+      // ------------------------------------------------------
+
+      const eventYearLabel =
+        document.createElement(
+          "span"
+        );
+
+
+      eventYearLabel.textContent =
+        event.eventYear;
+
+
+      eventScaleMarker.appendChild(
+        eventYearLabel
+      );
+
+
+      scaleRow.appendChild(
+        eventScaleMarker
+      );
+    }
+  );
 
 
   // ==========================================================
@@ -1245,10 +1323,8 @@ function displayPeopleLifeline(
         (event) => {
 
           if (
-            event.eventYear <
-              minYear ||
-            event.eventYear >
-              maxYear
+            event.eventYear < minYear ||
+            event.eventYear > maxYear
           ) {
 
             return;
@@ -1277,13 +1353,6 @@ function displayPeopleLifeline(
           eventMarker.style.left =
             `${eventPosition}%`;
 
-
-          // --------------------------------------------------
-          // マーカーへ情報を持たせます。
-          //
-          // 将来、タップしたときに
-          // イベント詳細を出すこともできます。
-          // --------------------------------------------------
 
           eventMarker.title =
             `${event.eventYear}年 ${event.title || ""}`;
