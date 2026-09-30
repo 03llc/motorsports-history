@@ -425,3 +425,80 @@ h1 {
   color: #666;
   line-height: 1.6;
 }
+
+/* ============================================================
+   人物ライフライン比較
+   ============================================================ */
+
+#people-lifeline {
+  margin-top: 70px;
+  margin-bottom: 80px;
+}
+
+
+/* ライフライン全体 */
+#people-lifeline-chart {
+  margin-top: 24px;
+}
+
+
+/* 1人分の行 */
+.lifeline-row {
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+
+/* 人物名 */
+.lifeline-label {
+  font-weight: bold;
+  line-height: 1.4;
+}
+
+
+/* 横方向の時間軸 */
+.lifeline-track {
+  position: relative;
+  height: 34px;
+  background: #e9e9e9;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+
+/* 人物の生涯を表す帯 */
+.lifeline-bar {
+  position: absolute;
+  top: 5px;
+  height: 24px;
+  background: #333;
+  border-radius: 999px;
+}
+
+
+/* 帯の中の生没年表示 */
+.lifeline-text {
+  display: block;
+  padding: 3px 10px;
+  color: #fff;
+  font-size: 0.8rem;
+  line-height: 18px;
+  white-space: nowrap;
+}
+
+
+/* スマホ表示 */
+@media (max-width: 700px) {
+
+  .lifeline-row {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+
+  .lifeline-label {
+    margin-bottom: 2px;
+  }
+}
