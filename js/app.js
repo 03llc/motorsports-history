@@ -664,6 +664,9 @@ async function loadPeople() {
     // 人物を表示
     displayPeople(peopleData);
 
+    // 人物ライフライン比較も表示
+displayPeopleLifeline(peopleData);
+    
   } catch (error) {
 
     console.error(error);
@@ -848,6 +851,250 @@ function displayPeople(peopleData) {
 // 年表と人物は、それぞれ別のJSONファイルから読み込みます。
 //
 // ============================================================
+
+// ============================================================
+// 人物ライフライン比較
+// ============================================================
+//
+// people.json にある birth / death を使って、
+// 複数人物の生涯を同じ時間軸上に表示します。
+//
+// 現時点では、人物の「生年〜没年」を
+// 横棒として比較するシンプルな表示です。
+//
+// 存命人物は death が null なので、
+// 現在年までのラインとして表示します。
+// ============================================================
+
+function displayPeopleLifeline(peopleData) {
+
+  const chart =
+    document.getElementById("people-lifeline-chart");
+
+  // 表示エリアがなければ何もしない
+  if (!chart) {
+    return;
+  }
+
+
+  // 人物データがない場合
+  if (
+    !Array.isArray(peopleData) ||
+    peopleData.length === 0
+  ) {
+
+    chart.innerHTML =
+      "<p>人物ライフラインデータはまだありません。</p>";
+
+    return;
+  }
+
+
+  // ----------------------------------------------------------
+  // 生年が登録されている人物だけを対象にする
+  // ----------------------------------------------------------
+
+  const validPeople =
+    peopleData.filter((person) => {
+
+      return (
+        person.lifespan &&
+        person.lifespan.birth
+      );
+    });
+
+
+  if (validPeople.length === 0) {
+
+    chart.innerHTML =
+      "<p>生年月日が登録された人物がありません。</p>";
+
+    return;
+  }
+
+
+  // ----------------------------------------------------------
+  // 年だけ取り出す
+  // ----------------------------------------------------------
+
+  const currentYear =
+    new Date().getFullYear();
+
+
+  const peopleWithYears =
+    validPeople.map((person) => {
+
+      const birthYear =
+        parseInt(
+          person.lifespan.birth.substring(0, 4),
+          10
+        );
+
+
+      const deathYear =
+        person.lifespan.death
+          ? parseInt(
+              person.lifespan.death.substring(0, 4),
+              10
+            )
+          : currentYear;
+
+
+      return {
+        ...person,
+        birthYear,
+        deathYear
+      };
+    });
+
+
+  // ----------------------------------------------------------
+  // 全人物の中で最も早い生年と、
+  // 最も遅い没年を求める
+  // ----------------------------------------------------------
+
+  const minYear =
+    Math.min(
+      ...peopleWithYears.map(
+        (person) => person.birthYear
+      )
+    );
+
+
+  const maxYear =
+    Math.max(
+      ...peopleWithYears.map(
+        (person) => person.deathYear
+      )
+    );
+
+
+  const totalYears =
+    maxYear - minYear;
+
+
+  // 念のため0除算を防ぐ
+  if (totalYears <= 0) {
+    chart.innerHTML =
+      "<p>ライフラインを計算できませんでした。</p>";
+    return;
+  }
+
+
+  // 一度中身を空にする
+  chart.innerHTML = "";
+
+
+  // ==========================================================
+  // 人物ごとに1本ずつライフラインを作成
+  // ==========================================================
+
+  peopleWithYears.forEach((person) => {
+
+    // 1人分の行
+    const row =
+      document.createElement("div");
+
+    row.className =
+      "lifeline-row";
+
+
+    // --------------------------------------------------------
+    // 人物名
+    // --------------------------------------------------------
+
+    const label =
+      document.createElement("div");
+
+    label.className =
+      "lifeline-label";
+
+    label.textContent =
+      person.name || "名称未登録";
+
+
+    // --------------------------------------------------------
+    // ライフライン本体
+    // --------------------------------------------------------
+
+    const track =
+      document.createElement("div");
+
+    track.className =
+      "lifeline-track";
+
+
+    const bar =
+      document.createElement("div");
+
+    bar.className =
+      "lifeline-bar";
+
+
+    // --------------------------------------------------------
+    // 横位置をパーセントで計算
+    // --------------------------------------------------------
+    //
+    // 例：
+    //
+    // 全体が1900〜2000年
+    // 人物が1940〜1980年なら
+    //
+    // 左位置 40%
+    // 幅     40%
+    //
+    // という感じです。
+    // --------------------------------------------------------
+
+    const left =
+      ((person.birthYear - minYear) /
+        totalYears) *
+      100;
+
+
+    const width =
+      ((person.deathYear - person.birthYear) /
+        totalYears) *
+      100;
+
+
+    bar.style.left =
+      `${left}%`;
+
+    bar.style.width =
+      `${Math.max(width, 1)}%`;
+
+
+    // --------------------------------------------------------
+    // 生没年を文字として表示
+    // --------------------------------------------------------
+
+    const text =
+      document.createElement("span");
+
+    text.className =
+      "lifeline-text";
+
+
+    const deathText =
+      person.lifespan.death
+        ? person.deathYear
+        : "現在";
+
+
+    text.textContent =
+      `${person.birthYear} - ${deathText}`;
+
+
+    bar.appendChild(text);
+    track.appendChild(bar);
+
+    row.appendChild(label);
+    row.appendChild(track);
+
+    chart.appendChild(row);
+  });
+}
 
 loadTimeline();
 loadPeople();
