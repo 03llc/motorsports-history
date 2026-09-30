@@ -502,3 +502,49 @@ h1 {
     margin-bottom: 2px;
   }
 }
+
+/* ============================================================
+   人物ライフライン：年代目盛り
+   ============================================================ */
+
+/*
+  人物名の列（140px）＋列間の余白（16px）ぶん、
+  年代目盛りを右へずらして、
+  実際のライフラインと横位置を合わせます。
+*/
+.lifeline-scale {
+  position: relative;
+  height: 32px;
+  margin-left: 156px;
+  margin-bottom: 8px;
+}
+
+
+/* 20年ごとの目盛り */
+.lifeline-scale-marker {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  border-left: 1px solid #aaa;
+}
+
+
+/* 年代の数字 */
+.lifeline-scale-marker span {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: translateX(-50%);
+  font-size: 0.78rem;
+  color: #666;
+  white-space: nowrap;
+}
+
+
+/* スマホでは人物名が上段になるため、左余白を解除 */
+@media (max-width: 700px) {
+
+  .lifeline-scale {
+    margin-left: 0;
+  }
+}
