@@ -1217,6 +1217,12 @@ async function loadCircuits() {
       allCircuitData
     );
 
+    /*
+ * サーキットの存続期間比較も表示します。
+ */
+displayCircuitLifeline(
+  allCircuitData
+);
 
     /*
      * 開発中の確認用です。
@@ -1485,7 +1491,555 @@ function displayCircuits(
   );
 }
 
+// ============================================================
+// サーキット存続期間比較
+// ============================================================
+//
+// circuits.json の
+//
+//   history.opened
+//   history.closed
+//
+// を使って、サーキットごとの存続期間を
+// 同じ時間軸上へ横棒で表示します。
+//
+// 人物ライフラインと同じCSSを利用するため、
+// .lifeline-row
+// .lifeline-label
+// .lifeline-track
+// .lifeline-bar
+// .lifeline-text
+//
+// などをそのまま使います。
+//
+// ============================================================
 
+function displayCircuitLifeline(
+  circuitData
+) {
+
+  /*
+   * HTML側の
+   *
+   * <div id="circuit-lifeline-chart"></div>
+   *
+   * を取得します。
+   */
+  const chart =
+    document.getElementById(
+      "circuit-lifeline-chart"
+    );
+
+
+  /*
+   * 表示先がなければ終了します。
+   */
+  if (!chart) {
+
+    return;
+  }
+
+
+
+  // ==========================================================
+  // 開場年が登録されているサーキットだけを対象にする
+  // ==========================================================
+
+  const validCircuits =
+    Array.isArray(
+      circuitData
+    )
+      ? circuitData.filter(
+          (circuit) =>
+            circuit.history?.opened
+        )
+      : [];
+
+
+  /*
+   * 対象データがない場合。
+   */
+  if (
+    validCircuits.length === 0
+  ) {
+
+    chart.innerHTML =
+      "<p>開場年が登録されたサーキットがありません。</p>";
+
+    return;
+  }
+
+
+
+  // ==========================================================
+  // 現在年
+  // ==========================================================
+
+  const currentYear =
+    new Date().getFullYear();
+
+
+
+  // ==========================================================
+  // 開場年・閉場年を数値へ変換
+  // ==========================================================
+  //
+  // opened が
+  //
+  //   1936-05-09
+  //   1962-09
+  //   1970
+  //
+  // のどの形式でも、
+  // 最初の4文字を使えば年だけ取得できます。
+  //
+  // ==========================================================
+
+  const circuitsWithYears =
+    validCircuits.map(
+      (circuit) => {
+
+
+        /*
+         * 開場年。
+         */
+        const openedYear =
+          parseInt(
+            circuit.history.opened
+              .substring(
+                0,
+                4
+              ),
+            10
+          );
+
+
+        /*
+         * 閉場年。
+         *
+         * closed が null の場合は、
+         * 現在も存続しているものとして
+         * currentYear を使います。
+         */
+        const closedYear =
+          circuit.history.closed
+            ? parseInt(
+                circuit.history.closed
+                  .substring(
+                    0,
+                    4
+                  ),
+                10
+              )
+            : currentYear;
+
+
+        return {
+
+          ...circuit,
+
+          openedYear,
+
+          closedYear
+
+        };
+      }
+    );
+
+
+
+  // ==========================================================
+  // 開場年の古い順に並べる
+  // ==========================================================
+
+  circuitsWithYears.sort(
+    (a, b) => {
+
+      return (
+        a.openedYear -
+        b.openedYear
+      );
+    }
+  );
+
+
+
+  // ==========================================================
+  // 時間軸の開始年
+  // ==========================================================
+
+  const minYear =
+    Math.min(
+      ...circuitsWithYears.map(
+        (circuit) =>
+          circuit.openedYear
+      )
+    );
+
+
+
+  // ==========================================================
+  // 時間軸の終了年
+  // ==========================================================
+  //
+  // 基本的には現在年まで表示します。
+  //
+  // ==========================================================
+
+  const maxYear =
+    Math.max(
+
+      currentYear,
+
+      ...circuitsWithYears.map(
+        (circuit) =>
+          circuit.closedYear
+      )
+    );
+
+
+
+  /*
+   * 時間軸全体の年数。
+   */
+  const totalYears =
+    maxYear -
+    minYear;
+
+
+  /*
+   * 計算できない場合。
+   */
+  if (
+    totalYears <= 0
+  ) {
+
+    chart.innerHTML =
+      "<p>サーキットの期間を計算できませんでした。</p>";
+
+    return;
+  }
+
+
+  /*
+   * 再描画に備えて空にします。
+   */
+  chart.innerHTML = "";
+
+
+
+  // ==========================================================
+  // 年代目盛り
+  // ==========================================================
+
+  const scaleRow =
+    document.createElement(
+      "div"
+    );
+
+
+  scaleRow.className =
+    "lifeline-scale";
+
+
+  /*
+   * 20年単位で最初の目盛りを決めます。
+   *
+   * 例：
+   * 最古が1936年なら1940年から表示。
+   */
+  const scaleStart =
+    Math.ceil(
+      minYear / 20
+    ) * 20;
+
+
+  /*
+   * 20年ごとの年代目盛りを作ります。
+   */
+  for (
+    let year =
+      scaleStart;
+
+    year <=
+      maxYear;
+
+    year +=
+      20
+  ) {
+
+    const marker =
+      document.createElement(
+        "div"
+      );
+
+
+    marker.className =
+      "lifeline-scale-marker";
+
+
+    /*
+     * 時間軸上の横位置を百分率に変換します。
+     */
+    const position =
+      (
+        (
+          year -
+          minYear
+        ) /
+        totalYears
+      ) * 100;
+
+
+    marker.style.left =
+      `${position}%`;
+
+
+    /*
+     * 年代ラベル。
+     */
+    const label =
+      document.createElement(
+        "span"
+      );
+
+
+    label.textContent =
+      year;
+
+
+    marker.appendChild(
+      label
+    );
+
+
+    scaleRow.appendChild(
+      marker
+    );
+  }
+
+
+
+  // ==========================================================
+  // 「現在」の目盛り
+  // ==========================================================
+
+  const currentMarker =
+    document.createElement(
+      "div"
+    );
+
+
+  currentMarker.className =
+    "lifeline-scale-marker lifeline-scale-current";
+
+
+  /*
+   * 現在は右端。
+   */
+  currentMarker.style.left =
+    "100%";
+
+
+  const currentLabel =
+    document.createElement(
+      "span"
+    );
+
+
+  currentLabel.textContent =
+    "現在";
+
+
+  currentMarker.appendChild(
+    currentLabel
+  );
+
+
+  scaleRow.appendChild(
+    currentMarker
+  );
+
+
+  /*
+   * 年代目盛りを画面へ追加。
+   */
+  chart.appendChild(
+    scaleRow
+  );
+
+
+
+  // ==========================================================
+  // サーキットごとの横棒
+  // ==========================================================
+
+  circuitsWithYears.forEach(
+    (circuit) => {
+
+
+      /*
+       * 1サーキット分の行。
+       */
+      const row =
+        document.createElement(
+          "div"
+        );
+
+
+      row.className =
+        "lifeline-row";
+
+
+
+      // --------------------------------------------------------
+      // サーキット名
+      // --------------------------------------------------------
+
+      const label =
+        document.createElement(
+          "div"
+        );
+
+
+      label.className =
+        "lifeline-label";
+
+
+      label.textContent =
+        circuit.name ||
+        "名称未登録";
+
+
+
+      // --------------------------------------------------------
+      // 横方向の時間軸
+      // --------------------------------------------------------
+
+      const track =
+        document.createElement(
+          "div"
+        );
+
+
+      track.className =
+        "lifeline-track";
+
+
+
+      // --------------------------------------------------------
+      // 存続期間を示す横棒
+      // --------------------------------------------------------
+
+      const bar =
+        document.createElement(
+          "div"
+        );
+
+
+      bar.className =
+        "lifeline-bar";
+
+
+      /*
+       * 開場年の横位置。
+       */
+      const left =
+        (
+          (
+            circuit.openedYear -
+            minYear
+          ) /
+          totalYears
+        ) * 100;
+
+
+      /*
+       * 存続期間の長さ。
+       */
+      const width =
+        (
+          (
+            circuit.closedYear -
+            circuit.openedYear
+          ) /
+          totalYears
+        ) * 100;
+
+
+      bar.style.left =
+        `${left}%`;
+
+
+      /*
+       * 期間が非常に短くても、
+       * 最低1%は表示します。
+       */
+      bar.style.width =
+        `${Math.max(
+          width,
+          1
+        )}%`;
+
+
+
+      // --------------------------------------------------------
+      // 横棒内の年代表示
+      // --------------------------------------------------------
+
+      const text =
+        document.createElement(
+          "span"
+        );
+
+
+      text.className =
+        "lifeline-text";
+
+
+      /*
+       * 現在も存続している場合は
+       * 「現在」と表示します。
+       */
+      const closedText =
+        circuit.history.closed
+          ? circuit.closedYear
+          : "現在";
+
+
+      text.textContent =
+        `${circuit.openedYear} - ${closedText}`;
+
+
+      bar.appendChild(
+        text
+      );
+
+
+      track.appendChild(
+        bar
+      );
+
+
+      row.appendChild(
+        label
+      );
+
+
+      row.appendChild(
+        track
+      );
+
+
+      /*
+       * 完成した行を画面へ追加します。
+       */
+      chart.appendChild(
+        row
+      );
+    }
+  );
+}
 
 // ============================================================
 // 人物ライフライン比較
