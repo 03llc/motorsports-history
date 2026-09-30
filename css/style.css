@@ -603,3 +603,43 @@ h1 {
 .lifeline-bar {
   z-index: 2;
 }
+
+/* ============================================================
+   人物ライフライン：年表イベントの年ラベル
+   ============================================================ */
+
+/*
+  20年ごとの年代目盛りとは少し見た目を変えて、
+  「これは年表上の出来事の年です」と分かるようにします。
+*/
+
+.lifeline-scale-event {
+  position: absolute;
+
+  top: 16px;
+
+  transform: translateX(-50%);
+
+  font-size: 0.72rem;
+
+  color: #888;
+
+  white-space: nowrap;
+
+  z-index: 3;
+}
+
+
+/*
+  イベント年ラベルの文字
+*/
+.lifeline-scale-event span {
+  display: inline-block;
+
+  padding: 1px 4px;
+
+  background: #fff;
+
+  border-radius: 3px;
+}
+
