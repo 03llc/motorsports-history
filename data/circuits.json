@@ -1,0 +1,291 @@
+[
+  {
+    "id": "circuit-tamagawa-speedway",
+    "name": "多摩川スピードウェイ",
+    "name_original": "Tamagawa Speedway",
+
+    "location": {
+      "country": "日本",
+      "prefecture": "神奈川県",
+      "city": "川崎市"
+    },
+
+    "history": {
+      "opened": "1936-05-09",
+      "closed": "1950",
+      "opened_precision": "day",
+      "closed_precision": "year"
+    },
+
+    "display": {
+      "history_text": "1936年5月9日 - 1950年"
+    },
+
+    "type": [
+      "permanent_circuit",
+      "historic"
+    ],
+
+    "related": {
+      "people": [],
+      "teams": [],
+      "cars": [],
+      "events": []
+    },
+
+    "sources": []
+  },
+
+  {
+    "id": "circuit-fuji-speedway",
+    "name": "富士スピードウェイ",
+    "name_original": "Fuji Speedway",
+
+    "location": {
+      "country": "日本",
+      "prefecture": "静岡県",
+      "city": "小山町"
+    },
+
+    "history": {
+      "opened": "1966-01-03",
+      "closed": null,
+      "opened_precision": "day",
+      "closed_precision": null
+    },
+
+    "display": {
+      "history_text": "1966年1月3日 -"
+    },
+
+    "type": [
+      "permanent_circuit"
+    ],
+
+    "related": {
+      "people": [],
+      "teams": [],
+      "cars": [],
+      "events": []
+    },
+
+    "sources": []
+  },
+
+  {
+    "id": "circuit-suzuka",
+    "name": "鈴鹿サーキット",
+    "name_original": "Suzuka Circuit",
+
+    "location": {
+      "country": "日本",
+      "prefecture": "三重県",
+      "city": "鈴鹿市"
+    },
+
+    "history": {
+      "opened": "1962-09",
+      "closed": null,
+      "opened_precision": "month",
+      "closed_precision": null
+    },
+
+    "display": {
+      "history_text": "1962年9月 -"
+    },
+
+    "type": [
+      "permanent_circuit"
+    ],
+
+    "related": {
+      "people": [],
+      "teams": [],
+      "cars": [],
+      "events": []
+    },
+
+    "sources": []
+  },
+
+  {
+    "id": "circuit-tsukuba",
+    "name": "筑波サーキット",
+    "name_original": "Tsukuba Circuit",
+
+    "location": {
+      "country": "日本",
+      "prefecture": "茨城県",
+      "city": "下妻市"
+    },
+
+    "history": {
+      "opened": "1970",
+      "closed": null,
+      "opened_precision": "year",
+      "closed_precision": null
+    },
+
+    "display": {
+      "history_text": "1970年 -"
+    },
+
+    "type": [
+      "permanent_circuit"
+    ],
+
+    "related": {
+      "people": [],
+      "teams": [],
+      "cars": [],
+      "events": []
+    },
+
+    "sources": []
+  },
+
+  {
+    "id": "circuit-sugo",
+    "name": "スポーツランドSUGO",
+    "name_original": "Sportsland SUGO",
+
+    "location": {
+      "country": "日本",
+      "prefecture": "宮城県",
+      "city": "村田町"
+    },
+
+    "history": {
+      "opened": "1975",
+      "closed": null,
+      "opened_precision": "year",
+      "closed_precision": null
+    },
+
+    "display": {
+      "history_text": "1975年 -"
+    },
+
+    "type": [
+      "permanent_circuit"
+    ],
+
+    "related": {
+      "people": [],
+      "teams": [],
+      "cars": [],
+      "events": []
+    },
+
+    "sources": []
+  },
+
+  {
+    "id": "circuit-okayama-international",
+    "name": "岡山国際サーキット",
+    "name_original": "Okayama International Circuit",
+
+    "location": {
+      "country": "日本",
+      "prefecture": "岡山県",
+      "city": "美作市"
+    },
+
+    "history": {
+      "opened": "1990",
+      "closed": null,
+      "opened_precision": "year",
+      "closed_precision": null
+    },
+
+    "display": {
+      "history_text": "1990年 -"
+    },
+
+    "type": [
+      "permanent_circuit"
+    ],
+
+    "related": {
+      "people": [],
+      "teams": [],
+      "cars": [],
+      "events": []
+    },
+
+    "sources": []
+  },
+
+  {
+    "id": "circuit-autopolis",
+    "name": "オートポリス",
+    "name_original": "Autopolis",
+
+    "location": {
+      "country": "日本",
+      "prefecture": "大分県",
+      "city": "日田市"
+    },
+
+    "history": {
+      "opened": "1990",
+      "closed": null,
+      "opened_precision": "year",
+      "closed_precision": null
+    },
+
+    "display": {
+      "history_text": "1990年 -"
+    },
+
+    "type": [
+      "permanent_circuit"
+    ],
+
+    "related": {
+      "people": [],
+      "teams": [],
+      "cars": [],
+      "events": []
+    },
+
+    "sources": []
+  },
+
+  {
+    "id": "circuit-motegi",
+    "name": "モビリティリゾートもてぎ",
+    "name_original": "Mobility Resort Motegi",
+
+    "location": {
+      "country": "日本",
+      "prefecture": "栃木県",
+      "city": "茂木町"
+    },
+
+    "history": {
+      "opened": "1997",
+      "closed": null,
+      "opened_precision": "year",
+      "closed_precision": null
+    },
+
+    "display": {
+      "history_text": "1997年 -"
+    },
+
+    "type": [
+      "permanent_circuit",
+      "oval"
+    ],
+
+    "related": {
+      "people": [],
+      "teams": [],
+      "cars": [],
+      "events": []
+    },
+
+    "sources": []
+  }
+]
