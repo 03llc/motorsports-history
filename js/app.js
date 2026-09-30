@@ -20,7 +20,7 @@
 
 let allTimelineData = [];
 let allPeopleData = [];
-
+let allCircuitData = [];
 
 // ============================================================
 // カテゴリ名
@@ -710,6 +710,76 @@ async function loadPeople() {
   }
 }
 
+// ============================================================
+// サーキットデータを読み込む
+// ============================================================
+
+async function loadCircuits() {
+
+  try {
+
+    /*
+     * data/circuits.json を取得します。
+     */
+    const response =
+      await fetch(
+        "./data/circuits.json"
+      );
+
+
+    /*
+     * 404などで正常に取得できなかった場合は、
+     * エラーとして扱います。
+     */
+    if (!response.ok) {
+
+      throw new Error(
+        "サーキットデータを読み込めませんでした。"
+      );
+    }
+
+
+    /*
+     * JSONとして読み込みます。
+     */
+    const circuitData =
+      await response.json();
+
+
+    /*
+     * 読み込んだデータを
+     * 全体で使える変数へ保存します。
+     */
+    allCircuitData =
+      circuitData;
+
+
+    /*
+     * この段階ではまだ画面には表示しません。
+     *
+     * 次のステップで、
+     * displayCircuits() を作る予定です。
+     */
+    console.log(
+      "サーキットデータを読み込みました。",
+      allCircuitData
+    );
+
+
+  } catch (error) {
+
+    /*
+     * 読み込みに失敗した場合は
+     * ブラウザのコンソールにエラーを表示します。
+     *
+     * 既存の年表や人物表示は壊さないように、
+     * 今は画面側には何も出しません。
+     */
+    console.error(
+      error
+    );
+  }
+}
 
 // ============================================================
 // 人物カード表示
@@ -1641,4 +1711,4 @@ peopleWithYears.sort(
 
 loadTimeline();
 loadPeople();
-
+loadCircuits();
