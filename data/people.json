@@ -1,70 +1,57 @@
 [
   {
     "id": "person-ukiya-tojiro",
-
     "name": "浮谷東次郎",
-
-"lifespan": {
-  "birth": "1942-07-16",
-  "death": "1965-08-21",
-  "birth_precision": "day",
-  "death_precision": "day"
-},
-
-"display": {
-  "lifespan_text": "1942年7月16日 - 1965年8月21日"
-},
-
+    "lifespan": {
+      "birth": "1942-07-16",
+      "death": "1965-08-21",
+      "birth_precision": "day",
+      "death_precision": "day"
+    },
+    "display": {
+      "lifespan_text": "1942年7月16日 - 1965年8月21日"
+    },
     "roles": [
       "driver"
     ],
-
     "related": {
       "teams": [],
       "cars": [],
       "circuits": [],
       "events": []
     },
-
-"sources": [
-  {
-    "title": "浮谷東次郎 - Wikipedia",
-    "author": "",
-    "publisher": "Wikipedia",
-    "year": null,
-    "url": "https://ja.wikipedia.org/wiki/%E6%B5%AE%E8%B0%B7%E6%9D%B1%E6%AC%A1%E9%83%8E",
-    "note": "生没年月日の確認用"
-  }
-]
+    "sources": [
+      {
+        "title": "浮谷東次郎 - Wikipedia",
+        "author": "",
+        "publisher": "Wikipedia",
+        "year": null,
+        "url": "https://ja.wikipedia.org/wiki/%E6%B5%AE%E8%B0%B7%E6%9D%B1%E6%AC%A1%E9%83%8E",
+        "note": "生没年月日の確認用"
+      }
+    ]
   },
-
   {
     "id": "person-ikuzawa-tetsu",
-
     "name": "生沢徹",
-
-"lifespan": {
-  "birth": "1942-08-21",
-  "death": null,
-  "birth_precision": "day",
-  "death_precision": null
-},
-
-"display": {
-  "lifespan_text": "1942年8月21日 -"
-},
-
+    "lifespan": {
+      "birth": "1942-08-21",
+      "death": null,
+      "birth_precision": "day",
+      "death_precision": null
+    },
+    "display": {
+      "lifespan_text": "1942年8月21日 -"
+    },
     "roles": [
       "driver"
     ],
-
     "related": {
       "teams": [],
       "cars": [],
       "circuits": [],
       "events": []
     },
-
     "sources": [
       {
         "title": "生沢徹 - Wikipedia",
@@ -75,5 +62,261 @@
         "note": "人物情報・生年月日の確認用"
       }
     ]
-  }  
+  },
+  {
+    "id": "person-kawai-minoru",
+    "name": "川合稔",
+    "lifespan": {
+      "birth": "1942-12-09",
+      "death": "1970-08-26",
+      "birth_precision": "day",
+      "death_precision": "day"
+    },
+    "display": {
+      "lifespan_text": "1942年12月9日 - 1970年8月26日"
+    },
+    "roles": [
+      "driver"
+    ],
+    "related": {
+      "teams": [],
+      "cars": [],
+      "circuits": [],
+      "events": []
+    },
+    "sources": [
+      {
+        "title": "川合稔 - Wikipedia",
+        "author": "",
+        "publisher": "Wikipedia",
+        "year": null,
+        "url": "https://ja.wikipedia.org/wiki/%E5%B7%9D%E5%90%88%E7%A8%94",
+        "note": "人物情報・生没年月日の確認用"
+      }
+    ]
+  },
+  {
+    "id": "person-fukuzawa-sachio",
+    "name": "福澤幸雄",
+    "lifespan": {
+      "birth": "1943-06-18",
+      "death": "1969-02-12",
+      "birth_precision": "day",
+      "death_precision": "day"
+    },
+    "display": {
+      "lifespan_text": "1943年6月18日 - 1969年2月12日"
+    },
+    "roles": [
+      "driver"
+    ],
+    "related": {
+      "teams": [],
+      "cars": [],
+      "circuits": [],
+      "events": []
+    },
+    "sources": [
+      {
+        "title": "福澤幸雄 - Wikipedia",
+        "author": "",
+        "publisher": "Wikipedia",
+        "year": null,
+        "url": "https://ja.wikipedia.org/wiki/%E7%A6%8F%E6%BE%A4%E5%B9%B8%E9%9B%84",
+        "note": "人物情報・生没年月日の確認用"
+      }
+    ]
+  },
+  {
+    "id": "person-hoshino-kazuyoshi",
+    "name": "星野一義",
+    "lifespan": {
+      "birth": "1947-07-01",
+      "death": null,
+      "birth_precision": "day",
+      "death_precision": null
+    },
+    "display": {
+      "lifespan_text": "1947年7月1日 -"
+    },
+    "roles": [
+      "driver"
+    ],
+    "related": {
+      "teams": [],
+      "cars": [],
+      "circuits": [],
+      "events": []
+    },
+    "sources": [
+      {
+        "title": "星野一義 - Wikipedia",
+        "author": "",
+        "publisher": "Wikipedia",
+        "year": null,
+        "url": "https://ja.wikipedia.org/wiki/%E6%98%9F%E9%87%8E%E4%B8%80%E7%BE%A9",
+        "note": "人物情報・生年月日の確認用"
+      }
+    ]
+  },
+  {
+    "id": "person-shinozuka-kenjiro",
+    "name": "篠塚建次郎",
+    "lifespan": {
+      "birth": "1948-11-20",
+      "death": "2024-03-18",
+      "birth_precision": "day",
+      "death_precision": "day"
+    },
+    "display": {
+      "lifespan_text": "1948年11月20日 - 2024年3月18日"
+    },
+    "roles": [
+      "driver"
+    ],
+    "related": {
+      "teams": [],
+      "cars": [],
+      "circuits": [],
+      "events": []
+    },
+    "sources": [
+      {
+        "title": "篠塚建次郎 - Wikipedia",
+        "author": "",
+        "publisher": "Wikipedia",
+        "year": null,
+        "url": "https://ja.wikipedia.org/wiki/%E7%AF%A0%E5%A1%9A%E5%BB%BA%E6%AC%A1%E9%83%8E",
+        "note": "人物情報・生没年月日の確認用"
+      }
+    ]
+  },
+  {
+    "id": "person-kazato-hiroshi",
+    "name": "風戸裕",
+    "lifespan": {
+      "birth": "1949-03-13",
+      "death": "1974-06-02",
+      "birth_precision": "day",
+      "death_precision": "day"
+    },
+    "display": {
+      "lifespan_text": "1949年3月13日 - 1974年6月2日"
+    },
+    "roles": [
+      "driver"
+    ],
+    "related": {
+      "teams": [],
+      "cars": [],
+      "circuits": [],
+      "events": []
+    },
+    "sources": [
+      {
+        "title": "風戸裕 - Wikipedia",
+        "author": "",
+        "publisher": "Wikipedia",
+        "year": null,
+        "url": "https://ja.wikipedia.org/wiki/%E9%A2%A8%E6%88%B8%E8%A3%95",
+        "note": "人物情報・生没年月日の確認用"
+      }
+    ]
+  },
+  {
+    "id": "person-nakajima-satoru",
+    "name": "中嶋悟",
+    "lifespan": {
+      "birth": "1953-02-23",
+      "death": null,
+      "birth_precision": "day",
+      "death_precision": null
+    },
+    "display": {
+      "lifespan_text": "1953年2月23日 -"
+    },
+    "roles": [
+      "driver"
+    ],
+    "related": {
+      "teams": [],
+      "cars": [],
+      "circuits": [],
+      "events": []
+    },
+    "sources": [
+      {
+        "title": "中嶋悟 - Wikipedia",
+        "author": "",
+        "publisher": "Wikipedia",
+        "year": null,
+        "url": "https://ja.wikipedia.org/wiki/%E4%B8%AD%E5%B6%8B%E6%82%9F",
+        "note": "人物情報・生年月日の確認用"
+      }
+    ]
+  },
+  {
+    "id": "person-suzuki-aguri",
+    "name": "鈴木亜久里",
+    "lifespan": {
+      "birth": "1960-09-08",
+      "death": null,
+      "birth_precision": "day",
+      "death_precision": null
+    },
+    "display": {
+      "lifespan_text": "1960年9月8日 -"
+    },
+    "roles": [
+      "driver"
+    ],
+    "related": {
+      "teams": [],
+      "cars": [],
+      "circuits": [],
+      "events": []
+    },
+    "sources": [
+      {
+        "title": "鈴木亜久里 - Wikipedia",
+        "author": "",
+        "publisher": "Wikipedia",
+        "year": null,
+        "url": "https://ja.wikipedia.org/wiki/%E9%88%B4%E6%9C%A8%E4%BA%9C%E4%B9%85%E9%87%8C",
+        "note": "人物情報・生年月日の確認用"
+      }
+    ]
+  },
+  {
+    "id": "person-katayama-ukyo",
+    "name": "片山右京",
+    "lifespan": {
+      "birth": "1963-05-29",
+      "death": null,
+      "birth_precision": "day",
+      "death_precision": null
+    },
+    "display": {
+      "lifespan_text": "1963年5月29日 -"
+    },
+    "roles": [
+      "driver"
+    ],
+    "related": {
+      "teams": [],
+      "cars": [],
+      "circuits": [],
+      "events": []
+    },
+    "sources": [
+      {
+        "title": "片山右京 - Wikipedia",
+        "author": "",
+        "publisher": "Wikipedia",
+        "year": null,
+        "url": "https://ja.wikipedia.org/wiki/%E7%89%87%E5%B1%B1%E5%8F%B3%E4%BA%AC",
+        "note": "人物情報・生年月日の確認用"
+      }
+    ]
+  }
 ]
