@@ -747,26 +747,56 @@ function displayPeople(
 
   const roleLabels = {
 
-    driver:
-      "ドライバー",
+const roleLabels = {
 
-    engineer:
-      "エンジニア",
+  driver:
+    "ドライバー",
 
-    designer:
-      "デザイナー",
+  engineer:
+    "技術者",
 
-    founder:
-      "創業者",
+  designer:
+    "デザイナー",
 
-    manager:
-      "監督・マネージャー"
-  };
+  founder:
+    "創業者",
+
+  manager:
+    "監督・マネージャー",
+
+  team_owner:
+    "チームオーナー",
+
+  businessperson:
+    "実業家"
+};
 
 
-  peopleData.forEach(
-    (person) => {
+/*
+ * 人物を生年月日の古い順に並べます。
+ *
+ * people.json の並び順に依存せず、
+ * 表示するときに自動で年代順にします。
+ */
+const sortedPeople =
+  [...peopleData].sort(
+    (a, b) => {
 
+      const birthA =
+        a.lifespan?.birth || "9999-12-31";
+
+      const birthB =
+        b.lifespan?.birth || "9999-12-31";
+
+      return birthA.localeCompare(
+        birthB
+      );
+    }
+  );
+
+
+sortedPeople.forEach(
+  (person) => {
 
       const article =
         document.createElement(
@@ -937,6 +967,19 @@ function displayPeopleLifeline(
       }
     );
 
+/*
+ * ライフラインも生年順に並べます。
+ */
+peopleWithYears.sort(
+  (a, b) => {
+
+    return (
+      a.birthYear -
+      b.birthYear
+    );
+  }
+);
+  
 
   // ==========================================================
   // 年表イベント
