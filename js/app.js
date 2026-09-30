@@ -745,8 +745,6 @@ function displayPeople(
   }
 
 
-  const roleLabels = {
-
 const roleLabels = {
 
   driver:
