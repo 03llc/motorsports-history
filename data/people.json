@@ -43,16 +43,16 @@
 
     "name": "生沢徹",
 
-    "lifespan": {
-      "birth": null,
-      "death": null,
-      "birth_precision": "unknown",
-      "death_precision": null
-    },
+"lifespan": {
+  "birth": "1942-08-21",
+  "death": null,
+  "birth_precision": "day",
+  "death_precision": null
+},
 
-    "display": {
-      "lifespan_text": "生年月日：典拠確認中"
-    },
+"display": {
+  "lifespan_text": "1942年8月21日 -"
+},
 
     "roles": [
       "driver"
