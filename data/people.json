@@ -318,5 +318,253 @@
         "note": "人物情報・生年月日の確認用"
       }
     ]
+  },
+
+  {
+    "id": "person-henry-ford",
+    "name": "ヘンリー・フォード",
+    "name_original": "Henry Ford",
+    "lifespan": {
+      "birth": "1863-07-30",
+      "death": "1947-04-07",
+      "birth_precision": "day",
+      "death_precision": "day"
+    },
+    "display": {
+      "lifespan_text": "1863年7月30日 - 1947年4月7日"
+    },
+    "roles": [
+      "founder",
+      "driver"
+    ],
+    "related": {
+      "companies": [],
+      "teams": [],
+      "cars": [],
+      "circuits": [],
+      "events": []
+    },
+    "sources": []
+  },
+
+  {
+    "id": "person-louis-renault",
+    "name": "ルイ・ルノー",
+    "name_original": "Louis Renault",
+    "lifespan": {
+      "birth": "1877-02-12",
+      "death": "1944-10-24",
+      "birth_precision": "day",
+      "death_precision": "day"
+    },
+    "display": {
+      "lifespan_text": "1877年2月12日 - 1944年10月24日"
+    },
+    "roles": [
+      "founder",
+      "driver",
+      "engineer"
+    ],
+    "related": {
+      "companies": [],
+      "teams": [],
+      "cars": [],
+      "circuits": [],
+      "events": []
+    },
+    "sources": []
+  },
+
+  {
+    "id": "person-ettore-bugatti",
+    "name": "エットーレ・ブガッティ",
+    "name_original": "Ettore Bugatti",
+    "lifespan": {
+      "birth": "1881-09-15",
+      "death": "1947-08-21",
+      "birth_precision": "day",
+      "death_precision": "day"
+    },
+    "display": {
+      "lifespan_text": "1881年9月15日 - 1947年8月21日"
+    },
+    "roles": [
+      "founder",
+      "engineer"
+    ],
+    "related": {
+      "companies": [],
+      "teams": [],
+      "cars": [],
+      "circuits": [],
+      "events": []
+    },
+    "sources": []
+  },
+
+  {
+    "id": "person-ferdinand-porsche",
+    "name": "フェルディナント・ポルシェ",
+    "name_original": "Ferdinand Porsche",
+    "lifespan": {
+      "birth": "1875-09-03",
+      "death": "1951-01-30",
+      "birth_precision": "day",
+      "death_precision": "day"
+    },
+    "display": {
+      "lifespan_text": "1875年9月3日 - 1951年1月30日"
+    },
+    "roles": [
+      "founder",
+      "engineer"
+    ],
+    "related": {
+      "companies": [],
+      "teams": [],
+      "cars": [],
+      "circuits": [],
+      "events": []
+    },
+    "sources": []
+  },
+
+  {
+    "id": "person-enzo-ferrari",
+    "name": "エンツォ・フェラーリ",
+    "name_original": "Enzo Ferrari",
+    "lifespan": {
+      "birth": "1898-02-18",
+      "death": "1988-08-14",
+      "birth_precision": "day",
+      "death_precision": "day"
+    },
+    "display": {
+      "lifespan_text": "1898年2月18日 - 1988年8月14日"
+    },
+    "roles": [
+      "founder",
+      "driver",
+      "team_owner"
+    ],
+    "related": {
+      "companies": [],
+      "teams": [],
+      "cars": [],
+      "circuits": [],
+      "events": []
+    },
+    "sources": []
+  },
+
+  {
+    "id": "person-honda-soichiro",
+    "name": "本田宗一郎",
+    "lifespan": {
+      "birth": "1906-11-17",
+      "death": "1991-08-05",
+      "birth_precision": "day",
+      "death_precision": "day"
+    },
+    "display": {
+      "lifespan_text": "1906年11月17日 - 1991年8月5日"
+    },
+    "roles": [
+      "founder",
+      "engineer",
+      "driver"
+    ],
+    "related": {
+      "companies": [],
+      "teams": [],
+      "cars": [],
+      "circuits": [],
+      "events": []
+    },
+    "sources": []
+  },
+
+  {
+    "id": "person-wo-bentley",
+    "name": "W・O・ベントレー",
+    "name_original": "W. O. Bentley",
+    "lifespan": {
+      "birth": "1888-09-16",
+      "death": "1971-08-13",
+      "birth_precision": "day",
+      "death_precision": "day"
+    },
+    "display": {
+      "lifespan_text": "1888年9月16日 - 1971年8月13日"
+    },
+    "roles": [
+      "founder",
+      "engineer"
+    ],
+    "related": {
+      "companies": [],
+      "teams": [],
+      "cars": [],
+      "circuits": [],
+      "events": []
+    },
+    "sources": []
+  },
+
+  {
+    "id": "person-colin-chapman",
+    "name": "コーリン・チャップマン",
+    "name_original": "Colin Chapman",
+    "lifespan": {
+      "birth": "1928-05-19",
+      "death": "1982-12-16",
+      "birth_precision": "day",
+      "death_precision": "day"
+    },
+    "display": {
+      "lifespan_text": "1928年5月19日 - 1982年12月16日"
+    },
+    "roles": [
+      "founder",
+      "engineer",
+      "team_owner"
+    ],
+    "related": {
+      "companies": [],
+      "teams": [],
+      "cars": [],
+      "circuits": [],
+      "events": []
+    },
+    "sources": []
+  },
+
+  {
+    "id": "person-bruce-mclaren",
+    "name": "ブルース・マクラーレン",
+    "name_original": "Bruce McLaren",
+    "lifespan": {
+      "birth": "1937-08-30",
+      "death": "1970-06-02",
+      "birth_precision": "day",
+      "death_precision": "day"
+    },
+    "display": {
+      "lifespan_text": "1937年8月30日 - 1970年6月2日"
+    },
+    "roles": [
+      "founder",
+      "driver",
+      "engineer",
+      "team_owner"
+    ],
+    "related": {
+      "companies": [],
+      "teams": [],
+      "cars": [],
+      "circuits": [],
+      "events": []
+    },
+    "sources": []
   }
 ]
