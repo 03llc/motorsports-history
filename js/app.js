@@ -8,8 +8,8 @@
 // ・people.json から人物を表示
 // ・人物ライフラインを表示
 // ・年表イベントをライフラインへ重ねる
-// ・イベント年をタップすると
-//   タイトル＋説明文を表示
+// ・イベント年をタップするとタイトル＋説明文を表示
+// ・選択中イベントの縦線も強調
 //
 // ============================================================
 
@@ -76,10 +76,7 @@ async function loadTimeline() {
       const dateB =
         b.time_span?.start || "";
 
-
-      return dateA.localeCompare(
-        dateB
-      );
+      return dateA.localeCompare(dateB);
     });
 
 
@@ -231,17 +228,9 @@ function displayTimeline(
         item.description || "";
 
 
-      article.appendChild(
-        date
-      );
-
-      article.appendChild(
-        title
-      );
-
-      article.appendChild(
-        description
-      );
+      article.appendChild(date);
+      article.appendChild(title);
+      article.appendChild(description);
 
 
       // ======================================================
@@ -249,9 +238,7 @@ function displayTimeline(
       // ======================================================
 
       if (
-        Array.isArray(
-          item.categories
-        ) &&
+        Array.isArray(item.categories) &&
         item.categories.length > 0
       ) {
 
@@ -301,9 +288,7 @@ function displayTimeline(
       // ======================================================
 
       if (
-        Array.isArray(
-          item.sources
-        ) &&
+        Array.isArray(item.sources) &&
         item.sources.length > 0
       ) {
 
@@ -793,7 +778,6 @@ function displayPeople(
         "person-item";
 
 
-      // 人物名
       const name =
         document.createElement(
           "h3"
@@ -810,7 +794,6 @@ function displayPeople(
       );
 
 
-      // 役割
       if (
         Array.isArray(
           person.roles
@@ -844,7 +827,6 @@ function displayPeople(
       }
 
 
-      // 生没年月日
       const lifespan =
         document.createElement(
           "p"
@@ -1168,6 +1150,16 @@ function displayPeopleLifeline(
         "lifeline-scale-event";
 
 
+      // ------------------------------------------------------
+      // イベントIDを持たせます。
+      //
+      // 同じイベントに対応する縦線を探すために使います。
+      // ------------------------------------------------------
+
+      eventButton.dataset.eventId =
+        event.id || "";
+
+
       const position =
         (
           (
@@ -1266,13 +1258,6 @@ function displayPeopleLifeline(
           // --------------------------------------------------
           // 2行目：説明文
           // --------------------------------------------------
-          //
-          // timeline.json の description を
-          // そのまま利用します。
-          //
-          // データに説明文がなければ、
-          // この部分は表示しません。
-          // --------------------------------------------------
 
           if (event.description) {
 
@@ -1296,9 +1281,9 @@ function displayPeopleLifeline(
           }
 
 
-          // --------------------------------------------------
-          // 選択中ボタンを切り替える
-          // --------------------------------------------------
+          // ==================================================
+          // 選択中イベント年ボタンを切り替える
+          // ==================================================
 
           scaleRow
             .querySelectorAll(
@@ -1317,6 +1302,42 @@ function displayPeopleLifeline(
           eventButton.classList.add(
             "active"
           );
+
+
+          // ==================================================
+          // すべてのイベント縦線から active を外す
+          // ==================================================
+
+          chart
+            .querySelectorAll(
+              ".lifeline-event-marker"
+            )
+            .forEach(
+              (marker) => {
+
+                marker.classList.remove(
+                  "active"
+                );
+              }
+            );
+
+
+          // ==================================================
+          // タップしたイベントと同じIDの縦線だけ強調
+          // ==================================================
+
+          chart
+            .querySelectorAll(
+              `.lifeline-event-marker[data-event-id="${event.id || ""}"]`
+            )
+            .forEach(
+              (marker) => {
+
+                marker.classList.add(
+                  "active"
+                );
+              }
+            );
         }
       );
 
@@ -1394,7 +1415,6 @@ function displayPeopleLifeline(
         "lifeline-row";
 
 
-      // 人物名
       const label =
         document.createElement(
           "div"
@@ -1410,7 +1430,6 @@ function displayPeopleLifeline(
         "名称未登録";
 
 
-      // 時間軸
       const track =
         document.createElement(
           "div"
@@ -1446,6 +1465,15 @@ function displayPeopleLifeline(
 
           eventMarker.className =
             "lifeline-event-marker";
+
+
+          // --------------------------------------------------
+          // この縦線がどのイベントか分かるように
+          // data-event-id を付けます。
+          // --------------------------------------------------
+
+          eventMarker.dataset.eventId =
+            event.id || "";
 
 
           const position =
@@ -1572,3 +1600,4 @@ function displayPeopleLifeline(
 
 loadTimeline();
 loadPeople();
+
